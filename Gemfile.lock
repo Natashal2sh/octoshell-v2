@@ -139,6 +139,14 @@ PATH
       underscore-rails
 
 PATH
+  remote: engines/mystatistics
+  specs:
+    mystatistics (0.0.1)
+      chart-js-rails
+      rails (~> 4.2.0)
+      time_difference (~> 0.5.0)
+
+PATH
   remote: engines/sessions
   specs:
     sessions (0.0.1)
@@ -293,6 +301,8 @@ GEM
       activesupport (>= 3.2.0)
       json (>= 1.7)
       mime-types (>= 1.16)
+    chart-js-rails (0.1.2)
+      railties (> 3.1)
     chronic (0.10.2)
     clbustos-rtf (0.5.0)
     cliver (0.3.2)
@@ -522,6 +532,8 @@ GEM
     thread_safe (0.3.5)
     thread_safe (0.3.5-java)
     tilt (2.0.2)
+    time_difference (0.5.0)
+      activesupport
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (3.0.0)
@@ -559,6 +571,7 @@ DEPENDENCIES
   letter_opener
   mina
   mina-rbenv-addons
+  mystatistics!
   phantomjs!
   poltergeist
   pry-rails
@@ -579,4 +592,4 @@ DEPENDENCIES
   wiki!
 
 BUNDLED WITH
-   1.11.2
+   1.13.6

@@ -1,0 +1,5490 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: abilities; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE abilities (
+    id integer NOT NULL,
+    action character varying(255),
+    subject character varying(255),
+    group_id integer,
+    available boolean DEFAULT false,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.abilities OWNER TO octo;
+
+--
+-- Name: abilities_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE abilities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.abilities_id_seq OWNER TO octo;
+
+--
+-- Name: abilities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE abilities_id_seq OWNED BY abilities.id;
+
+
+--
+-- Name: announcement_recipients; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE announcement_recipients (
+    id integer NOT NULL,
+    user_id integer,
+    announcement_id integer
+);
+
+
+ALTER TABLE public.announcement_recipients OWNER TO octo;
+
+--
+-- Name: announcement_recipients_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE announcement_recipients_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.announcement_recipients_id_seq OWNER TO octo;
+
+--
+-- Name: announcement_recipients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE announcement_recipients_id_seq OWNED BY announcement_recipients.id;
+
+
+--
+-- Name: announcements; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE announcements (
+    id integer NOT NULL,
+    title character varying(255),
+    reply_to character varying(255),
+    body text,
+    attachment character varying(255),
+    is_special boolean,
+    state character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.announcements OWNER TO octo;
+
+--
+-- Name: announcements_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE announcements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.announcements_id_seq OWNER TO octo;
+
+--
+-- Name: announcements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE announcements_id_seq OWNED BY announcements.id;
+
+
+--
+-- Name: core_access_fields; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_access_fields (
+    id integer NOT NULL,
+    access_id integer,
+    quota integer,
+    used integer DEFAULT 0,
+    quota_kind_id integer
+);
+
+
+ALTER TABLE public.core_access_fields OWNER TO octo;
+
+--
+-- Name: core_access_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_access_fields_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_access_fields_id_seq OWNER TO octo;
+
+--
+-- Name: core_access_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_access_fields_id_seq OWNED BY core_access_fields.id;
+
+
+--
+-- Name: core_accesses; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_accesses (
+    id integer NOT NULL,
+    project_id integer NOT NULL,
+    cluster_id integer NOT NULL,
+    state character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    project_group_name character varying(255)
+);
+
+
+ALTER TABLE public.core_accesses OWNER TO octo;
+
+--
+-- Name: core_accesses_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_accesses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_accesses_id_seq OWNER TO octo;
+
+--
+-- Name: core_accesses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_accesses_id_seq OWNED BY core_accesses.id;
+
+
+--
+-- Name: core_cities; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_cities (
+    id integer NOT NULL,
+    country_id integer,
+    title_ru character varying(255),
+    title_en character varying(255)
+);
+
+
+ALTER TABLE public.core_cities OWNER TO octo;
+
+--
+-- Name: core_cities_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_cities_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_cities_id_seq OWNER TO octo;
+
+--
+-- Name: core_cities_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_cities_id_seq OWNED BY core_cities.id;
+
+
+--
+-- Name: core_cluster_logs; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_cluster_logs (
+    id integer NOT NULL,
+    cluster_id integer NOT NULL,
+    message text NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    project_id integer
+);
+
+
+ALTER TABLE public.core_cluster_logs OWNER TO octo;
+
+--
+-- Name: core_cluster_logs_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_cluster_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_cluster_logs_id_seq OWNER TO octo;
+
+--
+-- Name: core_cluster_logs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_cluster_logs_id_seq OWNED BY core_cluster_logs.id;
+
+
+--
+-- Name: core_cluster_quotas; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_cluster_quotas (
+    id integer NOT NULL,
+    cluster_id integer NOT NULL,
+    value integer,
+    quota_kind_id integer
+);
+
+
+ALTER TABLE public.core_cluster_quotas OWNER TO octo;
+
+--
+-- Name: core_cluster_quotas_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_cluster_quotas_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_cluster_quotas_id_seq OWNER TO octo;
+
+--
+-- Name: core_cluster_quotas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_cluster_quotas_id_seq OWNED BY core_cluster_quotas.id;
+
+
+--
+-- Name: core_clusters; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_clusters (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    host character varying(255) NOT NULL,
+    description text,
+    public_key text,
+    private_key text,
+    admin_login character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    available_for_work boolean DEFAULT true
+);
+
+
+ALTER TABLE public.core_clusters OWNER TO octo;
+
+--
+-- Name: core_clusters_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_clusters_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_clusters_id_seq OWNER TO octo;
+
+--
+-- Name: core_clusters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_clusters_id_seq OWNED BY core_clusters.id;
+
+
+--
+-- Name: core_countries; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_countries (
+    id integer NOT NULL,
+    title_ru character varying(255),
+    title_en character varying(255)
+);
+
+
+ALTER TABLE public.core_countries OWNER TO octo;
+
+--
+-- Name: core_countries_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_countries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_countries_id_seq OWNER TO octo;
+
+--
+-- Name: core_countries_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_countries_id_seq OWNED BY core_countries.id;
+
+
+--
+-- Name: core_credentials; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_credentials (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    state character varying(255),
+    name character varying(255) NOT NULL,
+    public_key text NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_credentials OWNER TO octo;
+
+--
+-- Name: core_credentials_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_credentials_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_credentials_id_seq OWNER TO octo;
+
+--
+-- Name: core_credentials_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_credentials_id_seq OWNED BY core_credentials.id;
+
+
+--
+-- Name: core_critical_technologies; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_critical_technologies (
+    id integer NOT NULL,
+    name character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_critical_technologies OWNER TO octo;
+
+--
+-- Name: core_critical_technologies_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_critical_technologies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_critical_technologies_id_seq OWNER TO octo;
+
+--
+-- Name: core_critical_technologies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_critical_technologies_id_seq OWNED BY core_critical_technologies.id;
+
+
+--
+-- Name: core_critical_technologies_per_projects; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_critical_technologies_per_projects (
+    id integer NOT NULL,
+    critical_technology_id integer,
+    project_id integer
+);
+
+
+ALTER TABLE public.core_critical_technologies_per_projects OWNER TO octo;
+
+--
+-- Name: core_critical_technologies_per_projects_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_critical_technologies_per_projects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_critical_technologies_per_projects_id_seq OWNER TO octo;
+
+--
+-- Name: core_critical_technologies_per_projects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_critical_technologies_per_projects_id_seq OWNED BY core_critical_technologies_per_projects.id;
+
+
+--
+-- Name: core_direction_of_sciences; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_direction_of_sciences (
+    id integer NOT NULL,
+    name character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_direction_of_sciences OWNER TO octo;
+
+--
+-- Name: core_direction_of_sciences_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_direction_of_sciences_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_direction_of_sciences_id_seq OWNER TO octo;
+
+--
+-- Name: core_direction_of_sciences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_direction_of_sciences_id_seq OWNED BY core_direction_of_sciences.id;
+
+
+--
+-- Name: core_direction_of_sciences_per_projects; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_direction_of_sciences_per_projects (
+    id integer NOT NULL,
+    direction_of_science_id integer,
+    project_id integer
+);
+
+
+ALTER TABLE public.core_direction_of_sciences_per_projects OWNER TO octo;
+
+--
+-- Name: core_direction_of_sciences_per_projects_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_direction_of_sciences_per_projects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_direction_of_sciences_per_projects_id_seq OWNER TO octo;
+
+--
+-- Name: core_direction_of_sciences_per_projects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_direction_of_sciences_per_projects_id_seq OWNED BY core_direction_of_sciences_per_projects.id;
+
+
+--
+-- Name: core_employment_position_names; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_employment_position_names (
+    id integer NOT NULL,
+    name character varying(255),
+    autocomplete text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_employment_position_names OWNER TO octo;
+
+--
+-- Name: core_employment_position_names_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_employment_position_names_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_employment_position_names_id_seq OWNER TO octo;
+
+--
+-- Name: core_employment_position_names_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_employment_position_names_id_seq OWNED BY core_employment_position_names.id;
+
+
+--
+-- Name: core_employment_positions; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_employment_positions (
+    id integer NOT NULL,
+    employment_id integer,
+    name character varying(255),
+    value character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_employment_positions OWNER TO octo;
+
+--
+-- Name: core_employment_positions_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_employment_positions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_employment_positions_id_seq OWNER TO octo;
+
+--
+-- Name: core_employment_positions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_employment_positions_id_seq OWNED BY core_employment_positions.id;
+
+
+--
+-- Name: core_employments; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_employments (
+    id integer NOT NULL,
+    user_id integer,
+    organization_id integer,
+    "primary" boolean,
+    state character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    organization_department_id integer
+);
+
+
+ALTER TABLE public.core_employments OWNER TO octo;
+
+--
+-- Name: core_employments_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_employments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_employments_id_seq OWNER TO octo;
+
+--
+-- Name: core_employments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_employments_id_seq OWNED BY core_employments.id;
+
+
+--
+-- Name: core_members; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_members (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    project_id integer NOT NULL,
+    owner boolean DEFAULT false,
+    login character varying(255),
+    project_access_state character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    organization_id integer,
+    organization_department_id integer
+);
+
+
+ALTER TABLE public.core_members OWNER TO octo;
+
+--
+-- Name: core_members_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_members_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_members_id_seq OWNER TO octo;
+
+--
+-- Name: core_members_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_members_id_seq OWNED BY core_members.id;
+
+
+--
+-- Name: core_organization_departments; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_organization_departments (
+    id integer NOT NULL,
+    organization_id integer,
+    name character varying(255)
+);
+
+
+ALTER TABLE public.core_organization_departments OWNER TO octo;
+
+--
+-- Name: core_organization_departments_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_organization_departments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_organization_departments_id_seq OWNER TO octo;
+
+--
+-- Name: core_organization_departments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_organization_departments_id_seq OWNED BY core_organization_departments.id;
+
+
+--
+-- Name: core_organization_kinds; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_organization_kinds (
+    id integer NOT NULL,
+    name character varying(255),
+    departments_required boolean DEFAULT false,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_organization_kinds OWNER TO octo;
+
+--
+-- Name: core_organization_kinds_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_organization_kinds_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_organization_kinds_id_seq OWNER TO octo;
+
+--
+-- Name: core_organization_kinds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_organization_kinds_id_seq OWNED BY core_organization_kinds.id;
+
+
+--
+-- Name: core_organizations; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_organizations (
+    id integer NOT NULL,
+    name character varying(255),
+    abbreviation character varying(255),
+    kind_id integer,
+    country_id integer,
+    city_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_organizations OWNER TO octo;
+
+--
+-- Name: core_organizations_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_organizations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_organizations_id_seq OWNER TO octo;
+
+--
+-- Name: core_organizations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_organizations_id_seq OWNED BY core_organizations.id;
+
+
+--
+-- Name: core_project_cards; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_project_cards (
+    id integer NOT NULL,
+    project_id integer,
+    name text,
+    en_name text,
+    driver text,
+    en_driver text,
+    strategy text,
+    en_strategy text,
+    objective text,
+    en_objective text,
+    impact text,
+    en_impact text,
+    usage text,
+    en_usage text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_project_cards OWNER TO octo;
+
+--
+-- Name: core_project_cards_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_project_cards_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_project_cards_id_seq OWNER TO octo;
+
+--
+-- Name: core_project_cards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_project_cards_id_seq OWNED BY core_project_cards.id;
+
+
+--
+-- Name: core_project_invitations; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_project_invitations (
+    id integer NOT NULL,
+    project_id integer NOT NULL,
+    user_fio character varying(255) NOT NULL,
+    user_email character varying(255) NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_project_invitations OWNER TO octo;
+
+--
+-- Name: core_project_invitations_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_project_invitations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_project_invitations_id_seq OWNER TO octo;
+
+--
+-- Name: core_project_invitations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_project_invitations_id_seq OWNED BY core_project_invitations.id;
+
+
+--
+-- Name: core_project_kinds; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_project_kinds (
+    id integer NOT NULL,
+    name character varying(255)
+);
+
+
+ALTER TABLE public.core_project_kinds OWNER TO octo;
+
+--
+-- Name: core_project_kinds_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_project_kinds_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_project_kinds_id_seq OWNER TO octo;
+
+--
+-- Name: core_project_kinds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_project_kinds_id_seq OWNED BY core_project_kinds.id;
+
+
+--
+-- Name: core_projects; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_projects (
+    id integer NOT NULL,
+    title character varying(255) NOT NULL,
+    state character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    organization_id integer,
+    organization_department_id integer,
+    kind_id integer,
+    first_activation_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    estimated_finish_date timestamp without time zone
+);
+
+
+ALTER TABLE public.core_projects OWNER TO octo;
+
+--
+-- Name: core_projects_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_projects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_projects_id_seq OWNER TO octo;
+
+--
+-- Name: core_projects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_projects_id_seq OWNED BY core_projects.id;
+
+
+--
+-- Name: core_quota_kinds; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_quota_kinds (
+    id integer NOT NULL,
+    name character varying(255),
+    measurement character varying(255)
+);
+
+
+ALTER TABLE public.core_quota_kinds OWNER TO octo;
+
+--
+-- Name: core_quota_kinds_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_quota_kinds_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_quota_kinds_id_seq OWNER TO octo;
+
+--
+-- Name: core_quota_kinds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_quota_kinds_id_seq OWNED BY core_quota_kinds.id;
+
+
+--
+-- Name: core_request_fields; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_request_fields (
+    id integer NOT NULL,
+    request_id integer NOT NULL,
+    value integer,
+    quota_kind_id integer
+);
+
+
+ALTER TABLE public.core_request_fields OWNER TO octo;
+
+--
+-- Name: core_request_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_request_fields_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_request_fields_id_seq OWNER TO octo;
+
+--
+-- Name: core_request_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_request_fields_id_seq OWNED BY core_request_fields.id;
+
+
+--
+-- Name: core_requests; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_requests (
+    id integer NOT NULL,
+    project_id integer NOT NULL,
+    cluster_id integer NOT NULL,
+    state character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    cpu_hours integer,
+    gpu_hours integer,
+    hdd_size integer,
+    group_name character varying(255),
+    creator_id integer,
+    comment text
+);
+
+
+ALTER TABLE public.core_requests OWNER TO octo;
+
+--
+-- Name: core_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_requests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_requests_id_seq OWNER TO octo;
+
+--
+-- Name: core_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_requests_id_seq OWNED BY core_requests.id;
+
+
+--
+-- Name: core_research_areas; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_research_areas (
+    id integer NOT NULL,
+    name character varying(255),
+    "group" character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.core_research_areas OWNER TO octo;
+
+--
+-- Name: core_research_areas_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_research_areas_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_research_areas_id_seq OWNER TO octo;
+
+--
+-- Name: core_research_areas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_research_areas_id_seq OWNED BY core_research_areas.id;
+
+
+--
+-- Name: core_research_areas_per_projects; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_research_areas_per_projects (
+    id integer NOT NULL,
+    research_area_id integer,
+    project_id integer
+);
+
+
+ALTER TABLE public.core_research_areas_per_projects OWNER TO octo;
+
+--
+-- Name: core_research_areas_per_projects_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_research_areas_per_projects_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_research_areas_per_projects_id_seq OWNER TO octo;
+
+--
+-- Name: core_research_areas_per_projects_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_research_areas_per_projects_id_seq OWNED BY core_research_areas_per_projects.id;
+
+
+--
+-- Name: core_sureties; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_sureties (
+    id integer NOT NULL,
+    project_id integer,
+    state character varying(255),
+    comment character varying(255),
+    boss_full_name character varying(255),
+    boss_position character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    document character varying(255),
+    author_id integer
+);
+
+
+ALTER TABLE public.core_sureties OWNER TO octo;
+
+--
+-- Name: core_sureties_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_sureties_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_sureties_id_seq OWNER TO octo;
+
+--
+-- Name: core_sureties_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_sureties_id_seq OWNED BY core_sureties.id;
+
+
+--
+-- Name: core_surety_members; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_surety_members (
+    id integer NOT NULL,
+    user_id integer,
+    surety_id integer,
+    organization_id integer,
+    organization_department_id integer
+);
+
+
+ALTER TABLE public.core_surety_members OWNER TO octo;
+
+--
+-- Name: core_surety_members_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_surety_members_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_surety_members_id_seq OWNER TO octo;
+
+--
+-- Name: core_surety_members_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_surety_members_id_seq OWNED BY core_surety_members.id;
+
+
+--
+-- Name: core_surety_scans; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE core_surety_scans (
+    id integer NOT NULL,
+    surety_id integer,
+    image character varying(255)
+);
+
+
+ALTER TABLE public.core_surety_scans OWNER TO octo;
+
+--
+-- Name: core_surety_scans_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE core_surety_scans_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.core_surety_scans_id_seq OWNER TO octo;
+
+--
+-- Name: core_surety_scans_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE core_surety_scans_id_seq OWNED BY core_surety_scans.id;
+
+
+--
+-- Name: delayed_jobs; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE delayed_jobs (
+    id integer NOT NULL,
+    priority integer DEFAULT 0 NOT NULL,
+    attempts integer DEFAULT 0 NOT NULL,
+    handler text NOT NULL,
+    last_error text,
+    run_at timestamp without time zone,
+    locked_at timestamp without time zone,
+    failed_at timestamp without time zone,
+    locked_by character varying(255),
+    queue character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.delayed_jobs OWNER TO octo;
+
+--
+-- Name: delayed_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE delayed_jobs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.delayed_jobs_id_seq OWNER TO octo;
+
+--
+-- Name: delayed_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
+
+
+--
+-- Name: groups; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE groups (
+    id integer NOT NULL,
+    name character varying(255),
+    weight integer,
+    system boolean,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.groups OWNER TO octo;
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.groups_id_seq OWNER TO octo;
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
+
+
+--
+-- Name: profiles; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE profiles (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    first_name character varying(255),
+    last_name character varying(255),
+    middle_name character varying(255),
+    about text,
+    receive_info_mails boolean DEFAULT true,
+    receive_special_mails boolean DEFAULT true
+);
+
+
+ALTER TABLE public.profiles OWNER TO octo;
+
+--
+-- Name: profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE profiles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.profiles_id_seq OWNER TO octo;
+
+--
+-- Name: profiles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE profiles_id_seq OWNED BY profiles.id;
+
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE schema_migrations (
+    version character varying NOT NULL
+);
+
+
+ALTER TABLE public.schema_migrations OWNER TO octo;
+
+--
+-- Name: sessions_projects_in_sessions; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_projects_in_sessions (
+    id integer NOT NULL,
+    session_id integer,
+    project_id integer
+);
+
+
+ALTER TABLE public.sessions_projects_in_sessions OWNER TO octo;
+
+--
+-- Name: sessions_projects_in_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_projects_in_sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_projects_in_sessions_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_projects_in_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_projects_in_sessions_id_seq OWNED BY sessions_projects_in_sessions.id;
+
+
+--
+-- Name: sessions_report_replies; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_report_replies (
+    id integer NOT NULL,
+    report_id integer,
+    user_id integer,
+    message text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.sessions_report_replies OWNER TO octo;
+
+--
+-- Name: sessions_report_replies_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_report_replies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_report_replies_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_report_replies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_report_replies_id_seq OWNED BY sessions_report_replies.id;
+
+
+--
+-- Name: sessions_report_submit_denial_reasons; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_report_submit_denial_reasons (
+    id integer NOT NULL,
+    name character varying(255)
+);
+
+
+ALTER TABLE public.sessions_report_submit_denial_reasons OWNER TO octo;
+
+--
+-- Name: sessions_report_submit_denial_reasons_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_report_submit_denial_reasons_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_report_submit_denial_reasons_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_report_submit_denial_reasons_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_report_submit_denial_reasons_id_seq OWNED BY sessions_report_submit_denial_reasons.id;
+
+
+--
+-- Name: sessions_reports; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_reports (
+    id integer NOT NULL,
+    session_id integer,
+    project_id integer,
+    author_id integer,
+    expert_id integer,
+    state character varying(255),
+    materials character varying(255),
+    materials_file_name character varying(255),
+    materials_content_type character varying(255),
+    materials_file_size integer,
+    materials_updated_at timestamp without time zone,
+    illustration_points integer,
+    summary_points integer,
+    statement_points integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    submit_denial_reason_id integer,
+    submit_denial_description text
+);
+
+
+ALTER TABLE public.sessions_reports OWNER TO octo;
+
+--
+-- Name: sessions_reports_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_reports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_reports_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_reports_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_reports_id_seq OWNED BY sessions_reports.id;
+
+
+--
+-- Name: sessions_sessions; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_sessions (
+    id integer NOT NULL,
+    state character varying(255),
+    description text,
+    motivation text,
+    started_at timestamp without time zone,
+    ended_at timestamp without time zone,
+    receiving_to timestamp without time zone
+);
+
+
+ALTER TABLE public.sessions_sessions OWNER TO octo;
+
+--
+-- Name: sessions_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_sessions_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_sessions_id_seq OWNED BY sessions_sessions.id;
+
+
+--
+-- Name: sessions_stats; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_stats (
+    id integer NOT NULL,
+    session_id integer,
+    survey_field_id integer,
+    group_by character varying(255) DEFAULT 'count'::character varying,
+    weight integer DEFAULT 0,
+    organization_id integer,
+    cache text
+);
+
+
+ALTER TABLE public.sessions_stats OWNER TO octo;
+
+--
+-- Name: sessions_stats_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_stats_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_stats_id_seq OWNED BY sessions_stats.id;
+
+
+--
+-- Name: sessions_survey_fields; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_survey_fields (
+    id integer NOT NULL,
+    survey_id integer,
+    kind character varying(255),
+    collection text,
+    max_values integer DEFAULT 1,
+    weight integer DEFAULT 0,
+    name text,
+    required boolean DEFAULT false,
+    entity character varying(255),
+    strict_collection boolean DEFAULT false,
+    hint character varying(255),
+    reference_type character varying(255),
+    regexp character varying(255)
+);
+
+
+ALTER TABLE public.sessions_survey_fields OWNER TO octo;
+
+--
+-- Name: sessions_survey_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_survey_fields_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_survey_fields_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_survey_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_survey_fields_id_seq OWNED BY sessions_survey_fields.id;
+
+
+--
+-- Name: sessions_survey_kinds; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_survey_kinds (
+    id integer NOT NULL,
+    name character varying(255)
+);
+
+
+ALTER TABLE public.sessions_survey_kinds OWNER TO octo;
+
+--
+-- Name: sessions_survey_kinds_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_survey_kinds_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_survey_kinds_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_survey_kinds_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_survey_kinds_id_seq OWNED BY sessions_survey_kinds.id;
+
+
+--
+-- Name: sessions_survey_values; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_survey_values (
+    id integer NOT NULL,
+    value text,
+    survey_field_id integer,
+    user_id integer,
+    user_survey_id integer
+);
+
+
+ALTER TABLE public.sessions_survey_values OWNER TO octo;
+
+--
+-- Name: sessions_survey_values_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_survey_values_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_survey_values_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_survey_values_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_survey_values_id_seq OWNED BY sessions_survey_values.id;
+
+
+--
+-- Name: sessions_surveys; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_surveys (
+    id integer NOT NULL,
+    session_id integer,
+    kind_id integer,
+    name character varying(255),
+    only_for_project_owners boolean
+);
+
+
+ALTER TABLE public.sessions_surveys OWNER TO octo;
+
+--
+-- Name: sessions_surveys_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_surveys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_surveys_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_surveys_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_surveys_id_seq OWNED BY sessions_surveys.id;
+
+
+--
+-- Name: sessions_user_surveys; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE sessions_user_surveys (
+    id integer NOT NULL,
+    user_id integer,
+    session_id integer,
+    survey_id integer,
+    project_id integer,
+    state character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.sessions_user_surveys OWNER TO octo;
+
+--
+-- Name: sessions_user_surveys_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE sessions_user_surveys_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sessions_user_surveys_id_seq OWNER TO octo;
+
+--
+-- Name: sessions_user_surveys_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE sessions_user_surveys_id_seq OWNED BY sessions_user_surveys.id;
+
+
+--
+-- Name: statistics_organization_stats; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE statistics_organization_stats (
+    id integer NOT NULL,
+    kind character varying(255),
+    data text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.statistics_organization_stats OWNER TO octo;
+
+--
+-- Name: statistics_organization_stats_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE statistics_organization_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.statistics_organization_stats_id_seq OWNER TO octo;
+
+--
+-- Name: statistics_organization_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE statistics_organization_stats_id_seq OWNED BY statistics_organization_stats.id;
+
+
+--
+-- Name: statistics_project_stats; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE statistics_project_stats (
+    id integer NOT NULL,
+    kind character varying(255),
+    data text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.statistics_project_stats OWNER TO octo;
+
+--
+-- Name: statistics_project_stats_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE statistics_project_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.statistics_project_stats_id_seq OWNER TO octo;
+
+--
+-- Name: statistics_project_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE statistics_project_stats_id_seq OWNED BY statistics_project_stats.id;
+
+
+--
+-- Name: statistics_session_stats; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE statistics_session_stats (
+    id integer NOT NULL,
+    kind character varying(255),
+    data text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.statistics_session_stats OWNER TO octo;
+
+--
+-- Name: statistics_session_stats_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE statistics_session_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.statistics_session_stats_id_seq OWNER TO octo;
+
+--
+-- Name: statistics_session_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE statistics_session_stats_id_seq OWNED BY statistics_session_stats.id;
+
+
+--
+-- Name: statistics_user_stats; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE statistics_user_stats (
+    id integer NOT NULL,
+    kind character varying(255),
+    data text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.statistics_user_stats OWNER TO octo;
+
+--
+-- Name: statistics_user_stats_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE statistics_user_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.statistics_user_stats_id_seq OWNER TO octo;
+
+--
+-- Name: statistics_user_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE statistics_user_stats_id_seq OWNED BY statistics_user_stats.id;
+
+
+--
+-- Name: support_field_values; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_field_values (
+    id integer NOT NULL,
+    field_id integer,
+    ticket_id integer,
+    value text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.support_field_values OWNER TO octo;
+
+--
+-- Name: support_field_values_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_field_values_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_field_values_id_seq OWNER TO octo;
+
+--
+-- Name: support_field_values_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_field_values_id_seq OWNED BY support_field_values.id;
+
+
+--
+-- Name: support_fields; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_fields (
+    id integer NOT NULL,
+    name character varying(255),
+    hint character varying(255),
+    required boolean DEFAULT false,
+    contains_source_code boolean DEFAULT false,
+    url boolean DEFAULT false,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.support_fields OWNER TO octo;
+
+--
+-- Name: support_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_fields_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_fields_id_seq OWNER TO octo;
+
+--
+-- Name: support_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_fields_id_seq OWNED BY support_fields.id;
+
+
+--
+-- Name: support_replies; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_replies (
+    id integer NOT NULL,
+    author_id integer,
+    ticket_id integer,
+    message text,
+    attachment character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    attachment_file_name character varying(255),
+    attachment_content_type character varying(255),
+    attachment_file_size integer,
+    attachment_updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.support_replies OWNER TO octo;
+
+--
+-- Name: support_replies_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_replies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_replies_id_seq OWNER TO octo;
+
+--
+-- Name: support_replies_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_replies_id_seq OWNED BY support_replies.id;
+
+
+--
+-- Name: support_reply_templates; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_reply_templates (
+    id integer NOT NULL,
+    subject character varying(255),
+    message text
+);
+
+
+ALTER TABLE public.support_reply_templates OWNER TO octo;
+
+--
+-- Name: support_reply_templates_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_reply_templates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_reply_templates_id_seq OWNER TO octo;
+
+--
+-- Name: support_reply_templates_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_reply_templates_id_seq OWNED BY support_reply_templates.id;
+
+
+--
+-- Name: support_tags; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_tags (
+    id integer NOT NULL,
+    name character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.support_tags OWNER TO octo;
+
+--
+-- Name: support_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_tags_id_seq OWNER TO octo;
+
+--
+-- Name: support_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_tags_id_seq OWNED BY support_tags.id;
+
+
+--
+-- Name: support_tickets; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_tickets (
+    id integer NOT NULL,
+    topic_id integer,
+    project_id integer,
+    cluster_id integer,
+    surety_id integer,
+    reporter_id integer,
+    subject character varying(255),
+    message text,
+    state character varying(255),
+    url character varying(255),
+    attachment character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    responsible_id integer,
+    attachment_file_name character varying(255),
+    attachment_content_type character varying(255),
+    attachment_file_size integer,
+    attachment_updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.support_tickets OWNER TO octo;
+
+--
+-- Name: support_tickets_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_tickets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_tickets_id_seq OWNER TO octo;
+
+--
+-- Name: support_tickets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_tickets_id_seq OWNED BY support_tickets.id;
+
+
+--
+-- Name: support_tickets_subscribers; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_tickets_subscribers (
+    id integer NOT NULL,
+    ticket_id integer,
+    user_id integer
+);
+
+
+ALTER TABLE public.support_tickets_subscribers OWNER TO octo;
+
+--
+-- Name: support_tickets_subscribers_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_tickets_subscribers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_tickets_subscribers_id_seq OWNER TO octo;
+
+--
+-- Name: support_tickets_subscribers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_tickets_subscribers_id_seq OWNED BY support_tickets_subscribers.id;
+
+
+--
+-- Name: support_tickets_tags; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_tickets_tags (
+    id integer NOT NULL,
+    ticket_id integer,
+    tag_id integer
+);
+
+
+ALTER TABLE public.support_tickets_tags OWNER TO octo;
+
+--
+-- Name: support_tickets_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_tickets_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_tickets_tags_id_seq OWNER TO octo;
+
+--
+-- Name: support_tickets_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_tickets_tags_id_seq OWNED BY support_tickets_tags.id;
+
+
+--
+-- Name: support_topics; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_topics (
+    id integer NOT NULL,
+    name character varying(255),
+    parent_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.support_topics OWNER TO octo;
+
+--
+-- Name: support_topics_fields; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_topics_fields (
+    id integer NOT NULL,
+    topic_id integer,
+    field_id integer
+);
+
+
+ALTER TABLE public.support_topics_fields OWNER TO octo;
+
+--
+-- Name: support_topics_fields_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_topics_fields_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_topics_fields_id_seq OWNER TO octo;
+
+--
+-- Name: support_topics_fields_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_topics_fields_id_seq OWNED BY support_topics_fields.id;
+
+
+--
+-- Name: support_topics_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_topics_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_topics_id_seq OWNER TO octo;
+
+--
+-- Name: support_topics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_topics_id_seq OWNED BY support_topics.id;
+
+
+--
+-- Name: support_topics_tags; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE support_topics_tags (
+    id integer NOT NULL,
+    topic_id integer,
+    tag_id integer
+);
+
+
+ALTER TABLE public.support_topics_tags OWNER TO octo;
+
+--
+-- Name: support_topics_tags_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE support_topics_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.support_topics_tags_id_seq OWNER TO octo;
+
+--
+-- Name: support_topics_tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE support_topics_tags_id_seq OWNED BY support_topics_tags.id;
+
+
+--
+-- Name: user_groups; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE user_groups (
+    id integer NOT NULL,
+    user_id integer,
+    group_id integer
+);
+
+
+ALTER TABLE public.user_groups OWNER TO octo;
+
+--
+-- Name: user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_groups_id_seq OWNER TO octo;
+
+--
+-- Name: user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE user_groups_id_seq OWNED BY user_groups.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    email character varying(255) NOT NULL,
+    crypted_password character varying(255),
+    salt character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    activation_state character varying(255),
+    activation_token character varying(255),
+    activation_token_expires_at timestamp without time zone,
+    remember_me_token character varying(255),
+    remember_me_token_expires_at timestamp without time zone,
+    reset_password_token character varying(255),
+    reset_password_token_expires_at timestamp without time zone,
+    reset_password_email_sent_at timestamp without time zone,
+    access_state character varying(255),
+    deleted_at timestamp without time zone,
+    last_login_at timestamp without time zone,
+    last_logout_at timestamp without time zone,
+    last_activity_at timestamp without time zone,
+    last_login_from_ip_address character varying(255)
+);
+
+
+ALTER TABLE public.users OWNER TO octo;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO octo;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- Name: wiki_pages; Type: TABLE; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE TABLE wiki_pages (
+    id integer NOT NULL,
+    name character varying(255),
+    content text,
+    url character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE public.wiki_pages OWNER TO octo;
+
+--
+-- Name: wiki_pages_id_seq; Type: SEQUENCE; Schema: public; Owner: octo
+--
+
+CREATE SEQUENCE wiki_pages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.wiki_pages_id_seq OWNER TO octo;
+
+--
+-- Name: wiki_pages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: octo
+--
+
+ALTER SEQUENCE wiki_pages_id_seq OWNED BY wiki_pages.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY abilities ALTER COLUMN id SET DEFAULT nextval('abilities_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY announcement_recipients ALTER COLUMN id SET DEFAULT nextval('announcement_recipients_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY announcements ALTER COLUMN id SET DEFAULT nextval('announcements_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_access_fields ALTER COLUMN id SET DEFAULT nextval('core_access_fields_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_accesses ALTER COLUMN id SET DEFAULT nextval('core_accesses_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_cities ALTER COLUMN id SET DEFAULT nextval('core_cities_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_cluster_logs ALTER COLUMN id SET DEFAULT nextval('core_cluster_logs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_cluster_quotas ALTER COLUMN id SET DEFAULT nextval('core_cluster_quotas_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_clusters ALTER COLUMN id SET DEFAULT nextval('core_clusters_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_countries ALTER COLUMN id SET DEFAULT nextval('core_countries_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_credentials ALTER COLUMN id SET DEFAULT nextval('core_credentials_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_critical_technologies ALTER COLUMN id SET DEFAULT nextval('core_critical_technologies_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_critical_technologies_per_projects ALTER COLUMN id SET DEFAULT nextval('core_critical_technologies_per_projects_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_direction_of_sciences ALTER COLUMN id SET DEFAULT nextval('core_direction_of_sciences_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_direction_of_sciences_per_projects ALTER COLUMN id SET DEFAULT nextval('core_direction_of_sciences_per_projects_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_employment_position_names ALTER COLUMN id SET DEFAULT nextval('core_employment_position_names_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_employment_positions ALTER COLUMN id SET DEFAULT nextval('core_employment_positions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_employments ALTER COLUMN id SET DEFAULT nextval('core_employments_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_members ALTER COLUMN id SET DEFAULT nextval('core_members_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_organization_departments ALTER COLUMN id SET DEFAULT nextval('core_organization_departments_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_organization_kinds ALTER COLUMN id SET DEFAULT nextval('core_organization_kinds_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_organizations ALTER COLUMN id SET DEFAULT nextval('core_organizations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_project_cards ALTER COLUMN id SET DEFAULT nextval('core_project_cards_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_project_invitations ALTER COLUMN id SET DEFAULT nextval('core_project_invitations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_project_kinds ALTER COLUMN id SET DEFAULT nextval('core_project_kinds_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_projects ALTER COLUMN id SET DEFAULT nextval('core_projects_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_quota_kinds ALTER COLUMN id SET DEFAULT nextval('core_quota_kinds_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_request_fields ALTER COLUMN id SET DEFAULT nextval('core_request_fields_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_requests ALTER COLUMN id SET DEFAULT nextval('core_requests_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_research_areas ALTER COLUMN id SET DEFAULT nextval('core_research_areas_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_research_areas_per_projects ALTER COLUMN id SET DEFAULT nextval('core_research_areas_per_projects_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_sureties ALTER COLUMN id SET DEFAULT nextval('core_sureties_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_surety_members ALTER COLUMN id SET DEFAULT nextval('core_surety_members_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY core_surety_scans ALTER COLUMN id SET DEFAULT nextval('core_surety_scans_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY profiles ALTER COLUMN id SET DEFAULT nextval('profiles_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_projects_in_sessions ALTER COLUMN id SET DEFAULT nextval('sessions_projects_in_sessions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_report_replies ALTER COLUMN id SET DEFAULT nextval('sessions_report_replies_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_report_submit_denial_reasons ALTER COLUMN id SET DEFAULT nextval('sessions_report_submit_denial_reasons_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_reports ALTER COLUMN id SET DEFAULT nextval('sessions_reports_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_sessions ALTER COLUMN id SET DEFAULT nextval('sessions_sessions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_stats ALTER COLUMN id SET DEFAULT nextval('sessions_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_survey_fields ALTER COLUMN id SET DEFAULT nextval('sessions_survey_fields_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_survey_kinds ALTER COLUMN id SET DEFAULT nextval('sessions_survey_kinds_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_survey_values ALTER COLUMN id SET DEFAULT nextval('sessions_survey_values_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_surveys ALTER COLUMN id SET DEFAULT nextval('sessions_surveys_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY sessions_user_surveys ALTER COLUMN id SET DEFAULT nextval('sessions_user_surveys_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY statistics_organization_stats ALTER COLUMN id SET DEFAULT nextval('statistics_organization_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY statistics_project_stats ALTER COLUMN id SET DEFAULT nextval('statistics_project_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY statistics_session_stats ALTER COLUMN id SET DEFAULT nextval('statistics_session_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY statistics_user_stats ALTER COLUMN id SET DEFAULT nextval('statistics_user_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_field_values ALTER COLUMN id SET DEFAULT nextval('support_field_values_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_fields ALTER COLUMN id SET DEFAULT nextval('support_fields_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_replies ALTER COLUMN id SET DEFAULT nextval('support_replies_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_reply_templates ALTER COLUMN id SET DEFAULT nextval('support_reply_templates_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_tags ALTER COLUMN id SET DEFAULT nextval('support_tags_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_tickets ALTER COLUMN id SET DEFAULT nextval('support_tickets_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_tickets_subscribers ALTER COLUMN id SET DEFAULT nextval('support_tickets_subscribers_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_tickets_tags ALTER COLUMN id SET DEFAULT nextval('support_tickets_tags_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_topics ALTER COLUMN id SET DEFAULT nextval('support_topics_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_topics_fields ALTER COLUMN id SET DEFAULT nextval('support_topics_fields_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY support_topics_tags ALTER COLUMN id SET DEFAULT nextval('support_topics_tags_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY user_groups ALTER COLUMN id SET DEFAULT nextval('user_groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: octo
+--
+
+ALTER TABLE ONLY wiki_pages ALTER COLUMN id SET DEFAULT nextval('wiki_pages_id_seq'::regclass);
+
+
+--
+-- Data for Name: abilities; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY abilities (id, action, subject, group_id, available, created_at, updated_at) FROM stdin;
+66	manage	sessions	2	f	2017-03-16 14:18:34.326	2017-03-16 14:18:34.326
+65	access	reports	2	f	2017-03-16 14:18:34.3	2017-03-16 14:18:34.3
+64	manage	reports	2	f	2017-03-16 14:18:34.271	2017-03-16 14:18:34.271
+63	manage	notices	2	f	2017-03-16 14:18:34.241	2017-03-16 14:18:34.241
+61	resolve	faults	2	f	2017-03-16 14:18:34.175	2017-03-16 14:18:34.175
+33	manage	sessions	1	t	2017-03-16 14:18:33.199	2017-03-16 14:18:33.199
+32	access	reports	1	t	2017-03-16 14:18:33.166	2017-03-16 14:18:33.166
+31	manage	reports	1	t	2017-03-16 14:18:33.135	2017-03-16 14:18:33.135
+30	manage	notices	1	t	2017-03-16 14:18:33.09	2017-03-16 14:18:33.09
+29	manage	notifications	1	t	2017-03-16 14:18:33.038	2017-03-16 14:18:33.038
+28	resolve	faults	1	t	2017-03-16 14:18:32.995	2017-03-16 14:18:32.995
+27	manage	research_areas	1	t	2017-03-16 14:18:32.943	2017-03-16 14:18:32.943
+26	access	admin	1	t	2017-03-16 14:18:32.906	2017-03-16 14:18:32.906
+25	show_all	all	1	t	2017-03-16 14:18:32.884	2017-03-16 14:18:32.884
+24	show_all	pages	1	t	2017-03-16 14:18:32.85	2017-03-16 14:18:32.85
+23	manage	pages	1	t	2017-03-16 14:18:32.82	2017-03-16 14:18:32.82
+22	manage	users	1	t	2017-03-16 14:18:32.792	2017-03-16 14:18:32.792
+21	decline	sureties	1	t	2017-03-16 14:18:32.731	2017-03-16 14:18:32.731
+20	close	sureties	1	t	2017-03-16 14:18:32.697	2017-03-16 14:18:32.697
+19	activate	sureties	1	t	2017-03-16 14:18:32.611	2017-03-16 14:18:32.611
+18	unconfirm	sureties	1	t	2017-03-16 14:18:32.578	2017-03-16 14:18:32.578
+17	confirm	sureties	1	t	2017-03-16 14:18:32.545	2017-03-16 14:18:32.545
+16	manage	sureties	1	t	2017-03-16 14:18:32.501	2017-03-16 14:18:32.501
+15	manage	requests	1	t	2017-03-16 14:18:32.462	2017-03-16 14:18:32.462
+14	manage	projects	1	t	2017-03-16 14:18:32.382	2017-03-16 14:18:32.382
+13	review	projects	1	t	2017-03-16 14:18:32.338	2017-03-16 14:18:32.338
+12	manage	position_names	1	t	2017-03-16 14:18:32.278	2017-03-16 14:18:32.278
+11	manage	organization_kinds	1	t	2017-03-16 14:18:32.222	2017-03-16 14:18:32.222
+10	manage	organizations	1	t	2017-03-16 14:18:32.187	2017-03-16 14:18:32.187
+9	access	history_items	1	t	2017-03-16 14:18:32.153	2017-03-16 14:18:32.153
+8	manage	groups	1	t	2017-03-16 14:18:32.108	2017-03-16 14:18:32.108
+7	manage	direction_of_sciences	1	t	2017-03-16 14:18:32.074	2017-03-16 14:18:32.074
+6	manage	credentials	1	t	2017-03-16 14:18:32.049	2017-03-16 14:18:32.049
+5	manage	critical_technologies	1	t	2017-03-16 14:18:32.017	2017-03-16 14:18:32.017
+4	manage	cluster_fields	1	t	2017-03-16 14:18:31.972	2017-03-16 14:18:31.972
+3	manage	clusters	1	t	2017-03-16 14:18:31.931	2017-03-16 14:18:31.931
+2	manage	tickets	1	t	2017-03-16 14:18:31.881	2017-03-16 14:18:31.881
+1	manage	accounts	1	t	2017-03-16 14:18:31.842	2017-03-16 14:18:31.842
+62	manage	notifications	2	f	2017-03-16 14:18:34.213	2017-03-16 14:18:34.213
+60	manage	research_areas	2	f	2017-03-16 14:18:34.137	2017-03-16 14:18:34.137
+59	access	admin	2	f	2017-03-16 14:18:34.097	2017-03-16 14:18:34.097
+58	show_all	all	2	f	2017-03-16 14:18:34.072	2017-03-16 14:18:34.072
+57	show_all	pages	2	f	2017-03-16 14:18:34.043	2017-03-16 14:18:34.043
+56	manage	pages	2	f	2017-03-16 14:18:34.012	2017-03-16 14:18:34.012
+55	manage	users	2	f	2017-03-16 14:18:33.979	2017-03-16 14:18:33.979
+54	decline	sureties	2	f	2017-03-16 14:18:33.933	2017-03-16 14:18:33.933
+53	close	sureties	2	f	2017-03-16 14:18:33.906	2017-03-16 14:18:33.906
+52	activate	sureties	2	f	2017-03-16 14:18:33.875	2017-03-16 14:18:33.875
+51	unconfirm	sureties	2	f	2017-03-16 14:18:33.847	2017-03-16 14:18:33.847
+50	confirm	sureties	2	f	2017-03-16 14:18:33.729	2017-03-16 14:18:33.729
+49	manage	sureties	2	f	2017-03-16 14:18:33.696	2017-03-16 14:18:33.696
+48	manage	requests	2	f	2017-03-16 14:18:33.667	2017-03-16 14:18:33.667
+47	manage	projects	2	f	2017-03-16 14:18:33.645	2017-03-16 14:18:33.645
+46	review	projects	2	f	2017-03-16 14:18:33.621	2017-03-16 14:18:33.621
+45	manage	position_names	2	f	2017-03-16 14:18:33.589	2017-03-16 14:18:33.589
+44	manage	organization_kinds	2	f	2017-03-16 14:18:33.565	2017-03-16 14:18:33.565
+43	manage	organizations	2	f	2017-03-16 14:18:33.541	2017-03-16 14:18:33.541
+42	access	history_items	2	f	2017-03-16 14:18:33.522	2017-03-16 14:18:33.522
+41	manage	groups	2	f	2017-03-16 14:18:33.5	2017-03-16 14:18:33.5
+40	manage	direction_of_sciences	2	f	2017-03-16 14:18:33.479	2017-03-16 14:18:33.479
+39	manage	credentials	2	f	2017-03-16 14:18:33.457	2017-03-16 14:18:33.457
+38	manage	critical_technologies	2	f	2017-03-16 14:18:33.431	2017-03-16 14:18:33.431
+37	manage	cluster_fields	2	f	2017-03-16 14:18:33.41	2017-03-16 14:18:33.41
+36	manage	clusters	2	f	2017-03-16 14:18:33.381	2017-03-16 14:18:33.381
+35	manage	tickets	2	f	2017-03-16 14:18:33.356	2017-03-16 14:18:33.356
+34	manage	accounts	2	f	2017-03-16 14:18:33.32	2017-03-16 14:18:33.32
+99	manage	sessions	3	f	2017-03-16 14:18:37.421	2017-03-16 14:18:37.421
+98	access	reports	3	f	2017-03-16 14:18:37.403	2017-03-16 14:18:37.403
+97	manage	reports	3	f	2017-03-16 14:18:37.382	2017-03-16 14:18:37.382
+96	manage	notices	3	f	2017-03-16 14:18:37.365	2017-03-16 14:18:37.365
+95	manage	notifications	3	f	2017-03-16 14:18:37.342	2017-03-16 14:18:37.342
+94	resolve	faults	3	f	2017-03-16 14:18:37.325	2017-03-16 14:18:37.325
+93	manage	research_areas	3	f	2017-03-16 14:18:37.306	2017-03-16 14:18:37.306
+92	access	admin	3	f	2017-03-16 14:18:37.289	2017-03-16 14:18:37.289
+91	show_all	all	3	f	2017-03-16 14:18:37.269	2017-03-16 14:18:37.269
+90	show_all	pages	3	f	2017-03-16 14:18:37.252	2017-03-16 14:18:37.252
+89	manage	pages	3	f	2017-03-16 14:18:37.235	2017-03-16 14:18:37.235
+88	manage	users	3	f	2017-03-16 14:18:37.215	2017-03-16 14:18:37.215
+87	decline	sureties	3	f	2017-03-16 14:18:37.196	2017-03-16 14:18:37.196
+86	close	sureties	3	f	2017-03-16 14:18:37.177	2017-03-16 14:18:37.177
+85	activate	sureties	3	f	2017-03-16 14:18:37.157	2017-03-16 14:18:37.157
+84	unconfirm	sureties	3	f	2017-03-16 14:18:37.139	2017-03-16 14:18:37.139
+83	confirm	sureties	3	f	2017-03-16 14:18:37.122	2017-03-16 14:18:37.122
+82	manage	sureties	3	f	2017-03-16 14:18:37.101	2017-03-16 14:18:37.101
+81	manage	requests	3	f	2017-03-16 14:18:37.083	2017-03-16 14:18:37.083
+80	manage	projects	3	f	2017-03-16 14:18:37.062	2017-03-16 14:18:37.062
+79	review	projects	3	f	2017-03-16 14:18:37.039	2017-03-16 14:18:37.039
+78	manage	position_names	3	f	2017-03-16 14:18:37.014	2017-03-16 14:18:37.014
+77	manage	organization_kinds	3	f	2017-03-16 14:18:36.989	2017-03-16 14:18:36.989
+76	manage	organizations	3	f	2017-03-16 14:18:36.964	2017-03-16 14:18:36.964
+75	access	history_items	3	f	2017-03-16 14:18:36.939	2017-03-16 14:18:36.939
+74	manage	groups	3	f	2017-03-16 14:18:36.919	2017-03-16 14:18:36.919
+73	manage	direction_of_sciences	3	f	2017-03-16 14:18:36.892	2017-03-16 14:18:36.892
+72	manage	credentials	3	f	2017-03-16 14:18:36.872	2017-03-16 14:18:36.872
+71	manage	critical_technologies	3	f	2017-03-16 14:18:36.852	2017-03-16 14:18:36.852
+70	manage	cluster_fields	3	f	2017-03-16 14:18:36.833	2017-03-16 14:18:36.833
+69	manage	clusters	3	f	2017-03-16 14:18:36.814	2017-03-16 14:18:36.814
+68	manage	tickets	3	f	2017-03-16 14:18:36.792	2017-03-16 14:18:36.792
+67	manage	accounts	3	f	2017-03-16 14:18:36.773	2017-03-16 14:18:36.773
+132	manage	sessions	4	f	2017-03-16 14:18:38.11	2017-03-16 14:18:38.11
+129	manage	notices	4	f	2017-03-16 14:18:38.036	2017-03-16 14:18:38.036
+128	manage	notifications	4	f	2017-03-16 14:18:38.013	2017-03-16 14:18:38.013
+127	resolve	faults	4	f	2017-03-16 14:18:37.992	2017-03-16 14:18:37.992
+126	manage	research_areas	4	f	2017-03-16 14:18:37.973	2017-03-16 14:18:37.973
+124	show_all	all	4	f	2017-03-16 14:18:37.928	2017-03-16 14:18:37.928
+123	show_all	pages	4	f	2017-03-16 14:18:37.906	2017-03-16 14:18:37.906
+122	manage	pages	4	f	2017-03-16 14:18:37.889	2017-03-16 14:18:37.889
+121	manage	users	4	f	2017-03-16 14:18:37.872	2017-03-16 14:18:37.872
+120	decline	sureties	4	f	2017-03-16 14:18:37.855	2017-03-16 14:18:37.855
+119	close	sureties	4	f	2017-03-16 14:18:37.838	2017-03-16 14:18:37.838
+118	activate	sureties	4	f	2017-03-16 14:18:37.817	2017-03-16 14:18:37.817
+117	unconfirm	sureties	4	f	2017-03-16 14:18:37.794	2017-03-16 14:18:37.794
+116	confirm	sureties	4	f	2017-03-16 14:18:37.771	2017-03-16 14:18:37.771
+115	manage	sureties	4	f	2017-03-16 14:18:37.749	2017-03-16 14:18:37.749
+114	manage	requests	4	f	2017-03-16 14:18:37.727	2017-03-16 14:18:37.727
+113	manage	projects	4	f	2017-03-16 14:18:37.709	2017-03-16 14:18:37.709
+112	review	projects	4	f	2017-03-16 14:18:37.69	2017-03-16 14:18:37.69
+111	manage	position_names	4	f	2017-03-16 14:18:37.668	2017-03-16 14:18:37.668
+110	manage	organization_kinds	4	f	2017-03-16 14:18:37.645	2017-03-16 14:18:37.645
+109	manage	organizations	4	f	2017-03-16 14:18:37.626	2017-03-16 14:18:37.626
+108	access	history_items	4	f	2017-03-16 14:18:37.61	2017-03-16 14:18:37.61
+107	manage	groups	4	f	2017-03-16 14:18:37.595	2017-03-16 14:18:37.595
+106	manage	direction_of_sciences	4	f	2017-03-16 14:18:37.578	2017-03-16 14:18:37.578
+105	manage	credentials	4	f	2017-03-16 14:18:37.561	2017-03-16 14:18:37.561
+104	manage	critical_technologies	4	f	2017-03-16 14:18:37.544	2017-03-16 14:18:37.544
+103	manage	cluster_fields	4	f	2017-03-16 14:18:37.528	2017-03-16 14:18:37.528
+102	manage	clusters	4	f	2017-03-16 14:18:37.509	2017-03-16 14:18:37.509
+101	manage	tickets	4	f	2017-03-16 14:18:37.491	2017-03-16 14:18:37.491
+100	manage	accounts	4	f	2017-03-16 14:18:37.47	2017-03-16 14:18:37.47
+165	manage	sessions	5	f	2017-03-16 14:18:38.786	2017-03-16 14:18:38.786
+164	access	reports	5	f	2017-03-16 14:18:38.771	2017-03-16 14:18:38.771
+163	manage	reports	5	f	2017-03-16 14:18:38.753	2017-03-16 14:18:38.753
+162	manage	notices	5	f	2017-03-16 14:18:38.736	2017-03-16 14:18:38.736
+161	manage	notifications	5	f	2017-03-16 14:18:38.721	2017-03-16 14:18:38.721
+160	resolve	faults	5	f	2017-03-16 14:18:38.704	2017-03-16 14:18:38.704
+159	manage	research_areas	5	f	2017-03-16 14:18:38.688	2017-03-16 14:18:38.688
+158	access	admin	5	f	2017-03-16 14:18:38.671	2017-03-16 14:18:38.671
+157	show_all	all	5	f	2017-03-16 14:18:38.647	2017-03-16 14:18:38.647
+156	show_all	pages	5	f	2017-03-16 14:18:38.622	2017-03-16 14:18:38.622
+155	manage	pages	5	f	2017-03-16 14:18:38.599	2017-03-16 14:18:38.599
+154	manage	users	5	f	2017-03-16 14:18:38.579	2017-03-16 14:18:38.579
+153	decline	sureties	5	f	2017-03-16 14:18:38.561	2017-03-16 14:18:38.561
+152	close	sureties	5	f	2017-03-16 14:18:38.538	2017-03-16 14:18:38.538
+131	access	reports	4	t	2017-03-16 14:18:38.086	2017-03-16 14:18:38.086
+130	manage	reports	4	t	2017-03-16 14:18:38.062	2017-03-16 14:18:38.062
+125	access	admin	4	t	2017-03-16 14:18:37.954	2017-03-16 14:18:37.954
+151	activate	sureties	5	f	2017-03-16 14:18:38.521	2017-03-16 14:18:38.521
+150	unconfirm	sureties	5	f	2017-03-16 14:18:38.504	2017-03-16 14:18:38.504
+149	confirm	sureties	5	f	2017-03-16 14:18:38.486	2017-03-16 14:18:38.486
+148	manage	sureties	5	f	2017-03-16 14:18:38.466	2017-03-16 14:18:38.466
+147	manage	requests	5	f	2017-03-16 14:18:38.449	2017-03-16 14:18:38.449
+146	manage	projects	5	f	2017-03-16 14:18:38.43	2017-03-16 14:18:38.43
+145	review	projects	5	f	2017-03-16 14:18:38.413	2017-03-16 14:18:38.413
+144	manage	position_names	5	f	2017-03-16 14:18:38.394	2017-03-16 14:18:38.394
+143	manage	organization_kinds	5	f	2017-03-16 14:18:38.377	2017-03-16 14:18:38.377
+142	manage	organizations	5	f	2017-03-16 14:18:38.359	2017-03-16 14:18:38.359
+141	access	history_items	5	f	2017-03-16 14:18:38.333	2017-03-16 14:18:38.333
+140	manage	groups	5	f	2017-03-16 14:18:38.315	2017-03-16 14:18:38.315
+139	manage	direction_of_sciences	5	f	2017-03-16 14:18:38.296	2017-03-16 14:18:38.296
+138	manage	credentials	5	f	2017-03-16 14:18:38.279	2017-03-16 14:18:38.279
+137	manage	critical_technologies	5	f	2017-03-16 14:18:38.262	2017-03-16 14:18:38.262
+136	manage	cluster_fields	5	f	2017-03-16 14:18:38.243	2017-03-16 14:18:38.243
+135	manage	clusters	5	f	2017-03-16 14:18:38.222	2017-03-16 14:18:38.222
+134	manage	tickets	5	f	2017-03-16 14:18:38.202	2017-03-16 14:18:38.202
+133	manage	accounts	5	f	2017-03-16 14:18:38.174	2017-03-16 14:18:38.174
+198	manage	sessions	6	f	2017-03-16 14:18:39.384	2017-03-16 14:18:39.384
+197	access	reports	6	f	2017-03-16 14:18:39.362	2017-03-16 14:18:39.362
+196	manage	reports	6	f	2017-03-16 14:18:39.345	2017-03-16 14:18:39.345
+195	manage	notices	6	f	2017-03-16 14:18:39.33	2017-03-16 14:18:39.33
+194	manage	notifications	6	f	2017-03-16 14:18:39.313	2017-03-16 14:18:39.313
+193	resolve	faults	6	f	2017-03-16 14:18:39.295	2017-03-16 14:18:39.295
+192	manage	research_areas	6	f	2017-03-16 14:18:39.28	2017-03-16 14:18:39.28
+191	access	admin	6	f	2017-03-16 14:18:39.263	2017-03-16 14:18:39.263
+190	show_all	all	6	f	2017-03-16 14:18:39.248	2017-03-16 14:18:39.248
+189	show_all	pages	6	f	2017-03-16 14:18:39.232	2017-03-16 14:18:39.232
+188	manage	pages	6	f	2017-03-16 14:18:39.216	2017-03-16 14:18:39.216
+187	manage	users	6	f	2017-03-16 14:18:39.199	2017-03-16 14:18:39.199
+186	decline	sureties	6	f	2017-03-16 14:18:39.182	2017-03-16 14:18:39.182
+185	close	sureties	6	f	2017-03-16 14:18:39.166	2017-03-16 14:18:39.166
+184	activate	sureties	6	f	2017-03-16 14:18:39.148	2017-03-16 14:18:39.148
+183	unconfirm	sureties	6	f	2017-03-16 14:18:39.133	2017-03-16 14:18:39.133
+182	confirm	sureties	6	f	2017-03-16 14:18:39.115	2017-03-16 14:18:39.115
+181	manage	sureties	6	f	2017-03-16 14:18:39.095	2017-03-16 14:18:39.095
+180	manage	requests	6	f	2017-03-16 14:18:39.075	2017-03-16 14:18:39.075
+179	manage	projects	6	f	2017-03-16 14:18:39.057	2017-03-16 14:18:39.057
+178	review	projects	6	f	2017-03-16 14:18:39.039	2017-03-16 14:18:39.039
+177	manage	position_names	6	f	2017-03-16 14:18:39.02	2017-03-16 14:18:39.02
+176	manage	organization_kinds	6	f	2017-03-16 14:18:39.004	2017-03-16 14:18:39.004
+175	manage	organizations	6	f	2017-03-16 14:18:38.989	2017-03-16 14:18:38.989
+174	access	history_items	6	f	2017-03-16 14:18:38.973	2017-03-16 14:18:38.973
+173	manage	groups	6	f	2017-03-16 14:18:38.958	2017-03-16 14:18:38.958
+172	manage	direction_of_sciences	6	f	2017-03-16 14:18:38.942	2017-03-16 14:18:38.942
+171	manage	credentials	6	f	2017-03-16 14:18:38.928	2017-03-16 14:18:38.928
+170	manage	critical_technologies	6	f	2017-03-16 14:18:38.91	2017-03-16 14:18:38.91
+169	manage	cluster_fields	6	f	2017-03-16 14:18:38.89	2017-03-16 14:18:38.89
+168	manage	clusters	6	f	2017-03-16 14:18:38.871	2017-03-16 14:18:38.871
+167	manage	tickets	6	f	2017-03-16 14:18:38.855	2017-03-16 14:18:38.855
+166	manage	accounts	6	f	2017-03-16 14:18:38.832	2017-03-16 14:18:38.832
+\.
+
+
+--
+-- Name: abilities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('abilities_id_seq', 198, true);
+
+
+--
+-- Data for Name: announcement_recipients; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY announcement_recipients (id, user_id, announcement_id) FROM stdin;
+\.
+
+
+--
+-- Name: announcement_recipients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('announcement_recipients_id_seq', 1, false);
+
+
+--
+-- Data for Name: announcements; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY announcements (id, title, reply_to, body, attachment, is_special, state, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: announcements_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('announcements_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_access_fields; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_access_fields (id, access_id, quota, used, quota_kind_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_access_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_access_fields_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_accesses; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_accesses (id, project_id, cluster_id, state, created_at, updated_at, project_group_name) FROM stdin;
+\.
+
+
+--
+-- Name: core_accesses_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_accesses_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_cities; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_cities (id, country_id, title_ru, title_en) FROM stdin;
+1	1	Москва	Moscow
+\.
+
+
+--
+-- Name: core_cities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_cities_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_cluster_logs; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_cluster_logs (id, cluster_id, message, created_at, updated_at, project_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_cluster_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_cluster_logs_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_cluster_quotas; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_cluster_quotas (id, cluster_id, value, quota_kind_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_cluster_quotas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_cluster_quotas_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_clusters; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_clusters (id, name, host, description, public_key, private_key, admin_login, created_at, updated_at, available_for_work) FROM stdin;
+1	test	localhost	\N	ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDoh6sTl6mzEdmkcpgxefcrg3GF/WBwVSmrxphZEc22dtBxVfVmJCAYVOnJV69cMEM8UJ477bahroDZW8k5pkmYl4MQMUv82HDDtVUaerJaM64rGhI6XdfaR2TBgPNbQ4gzFAA6odDrKGKx+CSAr/fh+KZG//SMK7DosXdMuYJbv8jatJ2Ke+j/PjiXcpBsod4rq81pq+TtCWrvaC240TmjbvU3VMjpzP9Hng4+Bk7d8eXBKvOw7PWqM4fbC5Gtb9kHUldC2uJJRsrFg0IYC/jFe1qNDRLLFGBI3CR3G837+3m0CBrfHUONhebhbqsqinqIv5eOf5is6vztU29uX9UD localhost	-----BEGIN RSA PRIVATE KEY-----\nMIIEpQIBAAKCAQEA6IerE5epsxHZpHKYMXn3K4Nxhf1gcFUpq8aYWRHNtnbQcVX1\nZiQgGFTpyVevXDBDPFCeO+22oa6A2VvJOaZJmJeDEDFL/Nhww7VVGnqyWjOuKxoS\nOl3X2kdkwYDzW0OIMxQAOqHQ6yhisfgkgK/34fimRv/0jCuw6LF3TLmCW7/I2rSd\ninvo/z44l3KQbKHeK6vNaavk7Qlq72gtuNE5o271N1TI6cz/R54OPgZO3fHlwSrz\nsOz1qjOH2wuRrW/ZB1JXQtriSUbKxYNCGAv4xXtajQ0SyxRgSNwkdxvN+/t5tAga\n3x1DjYXm4W6rKop6iL+Xjn+YrOr87VNvbl/VAwIDAQABAoIBACtdxf+g7OK7JQKA\n5rZvfzPrzzvEffxlPaDOKHKQGfP6I7THab1zZlLzXyiQRGGmlJuGk4QsuL9dmqUu\n84/fXeFp/GUENJ5CxYESa/1EvceJ1OUv9w9QmiWY5AccpAY0yY1xIPvOWvbIcOOt\nGi2v48SOiYA7UyHjMhqrokq6XD/84Rc+u79vvEXjntZbzdsC+Q+607lc8P+MwUEq\nsPOEHIYS3QFqoh27c1RdO877UkGpXKguVxD/A5KWQyVMnEPjQEdOvbxlfTW1TvNS\n0S/VTxazEqTIzREcn7bx81Fy0Av0G4nexB5OPmAX66DczL4A3UO4m3mIhUpdHpjn\na+torJECgYEA9sAs0aRn2BO1Eu0/z1SS8LZB6TbLuSp+KrQQrGm8wOBMQvok2KZw\nak+BXc92mAyHfQdxAdGgcCn1pOL07c2lequZzmoKHNQWUUsZuJCWVOJ8R0KxLr4L\nE+MrTfGVlF0kfZNrtQeelbkm1hcX5vttjpkaKbL6ycgbzn6hUUm+VBMCgYEA8T8H\n4AtUUiaM6ZhW9rIvftgObPcodybNYNhDQmLHBDBoaPJZEuNT2Lg31IwHO05MMHS2\nc8lznSVNVtCB7e+HwpQqydt12NE4oRfEKnpJBL8f7ktNeSunZQ75oHGaV8PjYmxS\nFdSYyyqbKZ1fHwbKqkLnufKZqZ/m9xhkP321OVECgYEA9pTNNSMqcxAen69fWP2X\nad14uGn95CjGtD4Fe4afDdAX5ca8E5UgOd0B1pGAXioHK7bIA51My0njJMd5JDuh\n5pidt1zYhj6bntmB9qLm2CUNNNk83w0jXNhjahzF8eGymZs8w0e9/rlsSf4B8N3J\nefsd3hXx8Lt8rjp1UxpyjOkCgYEAlG2VaNFPpeO2GxrxloL3GfHQnlZK/VRQVF96\nsmOX0wn9k2RYTXi0Y8ikAQ/OezynP8DvaLnveiYzOVC8QCp5usvyr5NpJGdFkkfP\nF9t5BYSaHsER/5VOPq1CBOcgcRNC2ZGPx4KwJ4AlSytaFPrWwn67l/qddHG/ZxQI\nyc+MKqECgYEA1IEOXR9jzTcn81XyfozmOf5Z8rmBoef4XNa9wDuxq92LYSmbwRlv\n/A2AjzaiARNBhlpMdShee6JQ2Pa4DqVaLDPb4Vdj0qr2JMFDfQuGH5c+3mGw/aiQ\nbGqu/kiswS17Kud6xVGjy5VqBjJoqkgCO65ItMO0ShJol4QdoufCXC4=\n-----END RSA PRIVATE KEY-----\n	octo	2017-03-16 14:18:40.714	2017-03-16 14:18:40.714	t
+\.
+
+
+--
+-- Name: core_clusters_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_clusters_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_countries; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_countries (id, title_ru, title_en) FROM stdin;
+1	Россия	Russia
+\.
+
+
+--
+-- Name: core_countries_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_countries_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_credentials; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_credentials (id, user_id, state, name, public_key, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: core_credentials_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_credentials_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_critical_technologies; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_critical_technologies (id, name, created_at, updated_at) FROM stdin;
+1	Робототехника	2017-03-16 14:18:40.866	2017-03-16 14:18:40.866
+\.
+
+
+--
+-- Name: core_critical_technologies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_critical_technologies_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_critical_technologies_per_projects; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_critical_technologies_per_projects (id, critical_technology_id, project_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_critical_technologies_per_projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_critical_technologies_per_projects_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_direction_of_sciences; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_direction_of_sciences (id, name, created_at, updated_at) FROM stdin;
+1	Информационно-телекоммуникационные системы	2017-03-16 14:18:40.927	2017-03-16 14:18:40.927
+\.
+
+
+--
+-- Name: core_direction_of_sciences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_direction_of_sciences_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_direction_of_sciences_per_projects; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_direction_of_sciences_per_projects (id, direction_of_science_id, project_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_direction_of_sciences_per_projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_direction_of_sciences_per_projects_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_employment_position_names; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_employment_position_names (id, name, autocomplete, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: core_employment_position_names_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_employment_position_names_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_employment_positions; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_employment_positions (id, employment_id, name, value, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: core_employment_positions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_employment_positions_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_employments; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_employments (id, user_id, organization_id, "primary", state, created_at, updated_at, organization_department_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_employments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_employments_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_members; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_members (id, user_id, project_id, owner, login, project_access_state, created_at, updated_at, organization_id, organization_department_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_members_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_members_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_organization_departments; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_organization_departments (id, organization_id, name) FROM stdin;
+\.
+
+
+--
+-- Name: core_organization_departments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_organization_departments_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_organization_kinds; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_organization_kinds (id, name, departments_required, created_at, updated_at) FROM stdin;
+1	Российская коммерческая организация	f	2017-03-16 14:18:40.785	2017-03-16 14:18:40.785
+\.
+
+
+--
+-- Name: core_organization_kinds_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_organization_kinds_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_organizations; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_organizations (id, name, abbreviation, kind_id, country_id, city_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: core_organizations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_organizations_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_project_cards; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_project_cards (id, project_id, name, en_name, driver, en_driver, strategy, en_strategy, objective, en_objective, impact, en_impact, usage, en_usage, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: core_project_cards_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_project_cards_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_project_invitations; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_project_invitations (id, project_id, user_fio, user_email, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: core_project_invitations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_project_invitations_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_project_kinds; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_project_kinds (id, name) FROM stdin;
+1	Исследовательский
+\.
+
+
+--
+-- Name: core_project_kinds_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_project_kinds_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_projects; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_projects (id, title, state, created_at, updated_at, organization_id, organization_department_id, kind_id, first_activation_at, finished_at, estimated_finish_date) FROM stdin;
+\.
+
+
+--
+-- Name: core_projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_projects_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_quota_kinds; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_quota_kinds (id, name, measurement) FROM stdin;
+\.
+
+
+--
+-- Name: core_quota_kinds_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_quota_kinds_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_request_fields; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_request_fields (id, request_id, value, quota_kind_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_request_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_request_fields_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_requests; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_requests (id, project_id, cluster_id, state, created_at, updated_at, cpu_hours, gpu_hours, hdd_size, group_name, creator_id, comment) FROM stdin;
+\.
+
+
+--
+-- Name: core_requests_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_requests_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_research_areas; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_research_areas (id, name, "group", created_at, updated_at) FROM stdin;
+1	Математика	\N	2017-03-16 14:18:40.988	2017-03-16 14:18:40.988
+\.
+
+
+--
+-- Name: core_research_areas_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_research_areas_id_seq', 1, true);
+
+
+--
+-- Data for Name: core_research_areas_per_projects; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_research_areas_per_projects (id, research_area_id, project_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_research_areas_per_projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_research_areas_per_projects_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_sureties; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_sureties (id, project_id, state, comment, boss_full_name, boss_position, created_at, updated_at, document, author_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_sureties_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_sureties_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_surety_members; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_surety_members (id, user_id, surety_id, organization_id, organization_department_id) FROM stdin;
+\.
+
+
+--
+-- Name: core_surety_members_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_surety_members_id_seq', 1, false);
+
+
+--
+-- Data for Name: core_surety_scans; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY core_surety_scans (id, surety_id, image) FROM stdin;
+\.
+
+
+--
+-- Name: core_surety_scans_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('core_surety_scans_id_seq', 1, false);
+
+
+--
+-- Data for Name: delayed_jobs; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY delayed_jobs (id, priority, attempts, handler, last_error, run_at, locked_at, failed_at, locked_by, queue, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: delayed_jobs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('delayed_jobs_id_seq', 1, false);
+
+
+--
+-- Data for Name: groups; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY groups (id, name, weight, system, created_at, updated_at) FROM stdin;
+1	superadmins	\N	t	2017-03-16 14:18:31.59	2017-03-16 14:18:31.59
+2	authorized	\N	t	2017-03-16 14:18:33.251	2017-03-16 14:18:33.251
+3	faults_managers	\N	t	2017-03-16 14:18:36.74	2017-03-16 14:18:36.74
+4	experts	\N	t	2017-03-16 14:18:37.442	2017-03-16 14:18:37.442
+5	support	\N	t	2017-03-16 14:18:38.14	2017-03-16 14:18:38.14
+6	reregistrators	\N	t	2017-03-16 14:18:38.809	2017-03-16 14:18:38.809
+\.
+
+
+--
+-- Name: groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('groups_id_seq', 6, true);
+
+
+--
+-- Data for Name: profiles; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY profiles (id, user_id, first_name, last_name, middle_name, about, receive_info_mails, receive_special_mails) FROM stdin;
+1	1	\N	\N	\N	\N	t	t
+2	2	\N	\N	\N	\N	t	t
+3	3	\N	\N	\N	\N	t	t
+4	4	\N	\N	\N	\N	t	t
+\.
+
+
+--
+-- Name: profiles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('profiles_id_seq', 4, true);
+
+
+--
+-- Data for Name: schema_migrations; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY schema_migrations (version) FROM stdin;
+20150617111011
+20141113132210
+20141014120616
+20140717163051
+20141120080938
+20141209145941
+20140717163052
+20140828082346
+20140726152304
+20140826104558
+20140724114045
+20150306133521
+20150306133520
+20150318172518
+20141014120622
+20141111130210
+20140717163050
+20141014120617
+20140822105130
+20141029134849
+20150114095156
+20140903090538
+20140717163054
+20141110161957
+20141014120620
+20140724114051
+20140724114052
+20140726152303
+20150119103842
+20141119153848
+20141014120621
+20140724114054
+20141106154218
+20150114095155
+20140828082347
+20140717163055
+20140717163517
+20141119152822
+20141114123324
+20141014120615
+20141205152802
+20141113074922
+20140724114055
+20141203072344
+20140824085124
+20140822105129
+20140724114050
+20140729095108
+20141209145939
+20141014120619
+20140724114048
+20140724114057
+20140828082343
+20140826104258
+20141203072345
+20141107114423
+20140808105058
+20141113074921
+20141113111649
+20150115140042
+20140724114059
+20140824124723
+20140726152306
+20141106160447
+20140828090051
+20140718132637
+20140828082342
+20140724114047
+20140724114058
+20141113075857
+20140828082345
+20141014120618
+20150113135337
+20140828082344
+20140724114056
+20140717163518
+20140726152305
+20140729170550
+20141209145940
+20141110172021
+20141209145942
+20140717163053
+20141106185118
+20140729095107
+20140808105024
+20140724114046
+20141014120614
+20140820145700
+20140724114053
+20141106181112
+20140724114049
+20141114123325
+20150306133519
+20140828082341
+20141113111648
+\.
+
+
+--
+-- Data for Name: sessions_projects_in_sessions; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_projects_in_sessions (id, session_id, project_id) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_projects_in_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_projects_in_sessions_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_report_replies; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_report_replies (id, report_id, user_id, message, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_report_replies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_report_replies_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_report_submit_denial_reasons; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_report_submit_denial_reasons (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_report_submit_denial_reasons_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_report_submit_denial_reasons_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_reports; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_reports (id, session_id, project_id, author_id, expert_id, state, materials, materials_file_name, materials_content_type, materials_file_size, materials_updated_at, illustration_points, summary_points, statement_points, created_at, updated_at, submit_denial_reason_id, submit_denial_description) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_reports_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_reports_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_sessions; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_sessions (id, state, description, motivation, started_at, ended_at, receiving_to) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_sessions_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_stats; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_stats (id, session_id, survey_field_id, group_by, weight, organization_id, cache) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_stats_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_stats_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_survey_fields; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_survey_fields (id, survey_id, kind, collection, max_values, weight, name, required, entity, strict_collection, hint, reference_type, regexp) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_survey_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_survey_fields_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_survey_kinds; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_survey_kinds (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_survey_kinds_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_survey_kinds_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_survey_values; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_survey_values (id, value, survey_field_id, user_id, user_survey_id) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_survey_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_survey_values_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_surveys; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_surveys (id, session_id, kind_id, name, only_for_project_owners) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_surveys_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_surveys_id_seq', 1, false);
+
+
+--
+-- Data for Name: sessions_user_surveys; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY sessions_user_surveys (id, user_id, session_id, survey_id, project_id, state, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: sessions_user_surveys_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('sessions_user_surveys_id_seq', 1, false);
+
+
+--
+-- Data for Name: statistics_organization_stats; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY statistics_organization_stats (id, kind, data, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: statistics_organization_stats_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('statistics_organization_stats_id_seq', 1, false);
+
+
+--
+-- Data for Name: statistics_project_stats; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY statistics_project_stats (id, kind, data, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: statistics_project_stats_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('statistics_project_stats_id_seq', 1, false);
+
+
+--
+-- Data for Name: statistics_session_stats; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY statistics_session_stats (id, kind, data, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: statistics_session_stats_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('statistics_session_stats_id_seq', 1, false);
+
+
+--
+-- Data for Name: statistics_user_stats; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY statistics_user_stats (id, kind, data, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: statistics_user_stats_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('statistics_user_stats_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_field_values; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_field_values (id, field_id, ticket_id, value, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: support_field_values_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_field_values_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_fields; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_fields (id, name, hint, required, contains_source_code, url, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: support_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_fields_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_replies; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_replies (id, author_id, ticket_id, message, attachment, created_at, updated_at, attachment_file_name, attachment_content_type, attachment_file_size, attachment_updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: support_replies_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_replies_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_reply_templates; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_reply_templates (id, subject, message) FROM stdin;
+\.
+
+
+--
+-- Name: support_reply_templates_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_reply_templates_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_tags; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_tags (id, name, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: support_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_tags_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_tickets; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_tickets (id, topic_id, project_id, cluster_id, surety_id, reporter_id, subject, message, state, url, attachment, created_at, updated_at, responsible_id, attachment_file_name, attachment_content_type, attachment_file_size, attachment_updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: support_tickets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_tickets_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_tickets_subscribers; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_tickets_subscribers (id, ticket_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Name: support_tickets_subscribers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_tickets_subscribers_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_tickets_tags; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_tickets_tags (id, ticket_id, tag_id) FROM stdin;
+\.
+
+
+--
+-- Name: support_tickets_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_tickets_tags_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_topics; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_topics (id, name, parent_id, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Data for Name: support_topics_fields; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_topics_fields (id, topic_id, field_id) FROM stdin;
+\.
+
+
+--
+-- Name: support_topics_fields_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_topics_fields_id_seq', 1, false);
+
+
+--
+-- Name: support_topics_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_topics_id_seq', 1, false);
+
+
+--
+-- Data for Name: support_topics_tags; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY support_topics_tags (id, topic_id, tag_id) FROM stdin;
+\.
+
+
+--
+-- Name: support_topics_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('support_topics_tags_id_seq', 1, false);
+
+
+--
+-- Data for Name: user_groups; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY user_groups (id, user_id, group_id) FROM stdin;
+1	1	2
+2	2	2
+3	3	2
+4	4	2
+5	4	1
+\.
+
+
+--
+-- Name: user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('user_groups_id_seq', 5, true);
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY users (id, email, crypted_password, salt, created_at, updated_at, activation_state, activation_token, activation_token_expires_at, remember_me_token, remember_me_token_expires_at, reset_password_token, reset_password_token_expires_at, reset_password_email_sent_at, access_state, deleted_at, last_login_at, last_logout_at, last_activity_at, last_login_from_ip_address) FROM stdin;
+1	user1@octoshell.ru	$2a$10$ky7qjLbGFD81CBJmV.de1OmK7GI4GDB5DzbokGvmktBJyhNAqiPWu	gD9nyKpLNyjU7iKdJis6	2017-03-16 14:18:34.652	2017-03-16 14:18:35.202	active	\N	\N	\N	\N	\N	\N	\N	active	\N	\N	\N	\N	\N
+2	user2@octoshell.ru	$2a$10$cvgNubu9Xt0TscZEdoc5j.d4BUA9NyQdOgncEJXwD8XZOURfMEvjy	pq73n3LrSKFPFu8k5EUU	2017-03-16 14:18:35.48	2017-03-16 14:18:35.567	active	\N	\N	\N	\N	\N	\N	\N	active	\N	\N	\N	\N	\N
+3	user3@octoshell.ru	$2a$10$5BS3DqAbsFyH1ql7ljiDjOpF9X5UzEewWzZCSr2WEDjrrlsbdAY3a	zAPqzuAePGvrqqbPNo5N	2017-03-16 14:18:35.822	2017-03-16 14:18:35.892	active	\N	\N	\N	\N	\N	\N	\N	active	\N	\N	\N	\N	\N
+4	admin@octoshell.ru	$2a$10$X9sL8n2BNRnz1OPuQAG9R.fehoQAEaSGyvrEqiim0aTQRj3Uhswz.	rZkvNkZ41dqs5VNFCGuu	2017-03-16 14:18:36.188	2017-03-16 14:18:36.257	active	\N	\N	\N	\N	\N	\N	\N	active	\N	\N	\N	\N	\N
+\.
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('users_id_seq', 4, true);
+
+
+--
+-- Data for Name: wiki_pages; Type: TABLE DATA; Schema: public; Owner: octo
+--
+
+COPY wiki_pages (id, name, content, url, created_at, updated_at) FROM stdin;
+\.
+
+
+--
+-- Name: wiki_pages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: octo
+--
+
+SELECT pg_catalog.setval('wiki_pages_id_seq', 1, false);
+
+
+--
+-- Name: abilities_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY abilities
+    ADD CONSTRAINT abilities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: announcement_recipients_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY announcement_recipients
+    ADD CONSTRAINT announcement_recipients_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: announcements_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY announcements
+    ADD CONSTRAINT announcements_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_access_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_access_fields
+    ADD CONSTRAINT core_access_fields_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_accesses_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_accesses
+    ADD CONSTRAINT core_accesses_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_cities_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_cities
+    ADD CONSTRAINT core_cities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_cluster_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_cluster_logs
+    ADD CONSTRAINT core_cluster_logs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_cluster_quotas_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_cluster_quotas
+    ADD CONSTRAINT core_cluster_quotas_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_clusters_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_clusters
+    ADD CONSTRAINT core_clusters_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_countries_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_countries
+    ADD CONSTRAINT core_countries_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_credentials
+    ADD CONSTRAINT core_credentials_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_critical_technologies_per_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_critical_technologies_per_projects
+    ADD CONSTRAINT core_critical_technologies_per_projects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_critical_technologies_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_critical_technologies
+    ADD CONSTRAINT core_critical_technologies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_direction_of_sciences_per_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_direction_of_sciences_per_projects
+    ADD CONSTRAINT core_direction_of_sciences_per_projects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_direction_of_sciences_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_direction_of_sciences
+    ADD CONSTRAINT core_direction_of_sciences_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_employment_position_names_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_employment_position_names
+    ADD CONSTRAINT core_employment_position_names_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_employment_positions_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_employment_positions
+    ADD CONSTRAINT core_employment_positions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_employments_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_employments
+    ADD CONSTRAINT core_employments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_members_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_members
+    ADD CONSTRAINT core_members_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_organization_departments_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_organization_departments
+    ADD CONSTRAINT core_organization_departments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_organization_kinds_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_organization_kinds
+    ADD CONSTRAINT core_organization_kinds_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_organizations_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_organizations
+    ADD CONSTRAINT core_organizations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_project_cards_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_project_cards
+    ADD CONSTRAINT core_project_cards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_project_invitations_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_project_invitations
+    ADD CONSTRAINT core_project_invitations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_project_kinds_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_project_kinds
+    ADD CONSTRAINT core_project_kinds_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_projects
+    ADD CONSTRAINT core_projects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_quota_kinds_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_quota_kinds
+    ADD CONSTRAINT core_quota_kinds_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_request_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_request_fields
+    ADD CONSTRAINT core_request_fields_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_requests
+    ADD CONSTRAINT core_requests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_research_areas_per_projects_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_research_areas_per_projects
+    ADD CONSTRAINT core_research_areas_per_projects_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_research_areas_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_research_areas
+    ADD CONSTRAINT core_research_areas_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_sureties_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_sureties
+    ADD CONSTRAINT core_sureties_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_surety_members_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_surety_members
+    ADD CONSTRAINT core_surety_members_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: core_surety_scans_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY core_surety_scans
+    ADD CONSTRAINT core_surety_scans_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: delayed_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY delayed_jobs
+    ADD CONSTRAINT delayed_jobs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY groups
+    ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY profiles
+    ADD CONSTRAINT profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_projects_in_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_projects_in_sessions
+    ADD CONSTRAINT sessions_projects_in_sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_report_replies_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_report_replies
+    ADD CONSTRAINT sessions_report_replies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_report_submit_denial_reasons_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_report_submit_denial_reasons
+    ADD CONSTRAINT sessions_report_submit_denial_reasons_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_reports_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_reports
+    ADD CONSTRAINT sessions_reports_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_sessions
+    ADD CONSTRAINT sessions_sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_stats
+    ADD CONSTRAINT sessions_stats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_survey_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_survey_fields
+    ADD CONSTRAINT sessions_survey_fields_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_survey_kinds_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_survey_kinds
+    ADD CONSTRAINT sessions_survey_kinds_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_survey_values_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_survey_values
+    ADD CONSTRAINT sessions_survey_values_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_surveys_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_surveys
+    ADD CONSTRAINT sessions_surveys_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sessions_user_surveys_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY sessions_user_surveys
+    ADD CONSTRAINT sessions_user_surveys_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statistics_organization_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY statistics_organization_stats
+    ADD CONSTRAINT statistics_organization_stats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statistics_project_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY statistics_project_stats
+    ADD CONSTRAINT statistics_project_stats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statistics_session_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY statistics_session_stats
+    ADD CONSTRAINT statistics_session_stats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: statistics_user_stats_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY statistics_user_stats
+    ADD CONSTRAINT statistics_user_stats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_field_values_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_field_values
+    ADD CONSTRAINT support_field_values_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_fields
+    ADD CONSTRAINT support_fields_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_replies_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_replies
+    ADD CONSTRAINT support_replies_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_reply_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_reply_templates
+    ADD CONSTRAINT support_reply_templates_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_tags
+    ADD CONSTRAINT support_tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_tickets_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_tickets
+    ADD CONSTRAINT support_tickets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_tickets_subscribers_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_tickets_subscribers
+    ADD CONSTRAINT support_tickets_subscribers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_tickets_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_tickets_tags
+    ADD CONSTRAINT support_tickets_tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_topics_fields_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_topics_fields
+    ADD CONSTRAINT support_topics_fields_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_topics_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_topics
+    ADD CONSTRAINT support_topics_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: support_topics_tags_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY support_topics_tags
+    ADD CONSTRAINT support_topics_tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY user_groups
+    ADD CONSTRAINT user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: wiki_pages_pkey; Type: CONSTRAINT; Schema: public; Owner: octo; Tablespace: 
+--
+
+ALTER TABLE ONLY wiki_pages
+    ADD CONSTRAINT wiki_pages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: delayed_jobs_priority; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX delayed_jobs_priority ON delayed_jobs USING btree (priority, run_at);
+
+
+--
+-- Name: i_on_project_and_sessions_ids; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX i_on_project_and_sessions_ids ON sessions_projects_in_sessions USING btree (session_id, project_id);
+
+
+--
+-- Name: icrittechs_on_critical_technologies_per_projects; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX icrittechs_on_critical_technologies_per_projects ON core_critical_technologies_per_projects USING btree (critical_technology_id);
+
+
+--
+-- Name: idos_on_dos_per_projects; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX idos_on_dos_per_projects ON core_direction_of_sciences_per_projects USING btree (direction_of_science_id);
+
+
+--
+-- Name: index_abilities_on_group_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_abilities_on_group_id ON abilities USING btree (group_id);
+
+
+--
+-- Name: index_announcement_recipients_on_announcement_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_announcement_recipients_on_announcement_id ON announcement_recipients USING btree (announcement_id);
+
+
+--
+-- Name: index_announcement_recipients_on_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_announcement_recipients_on_user_id ON announcement_recipients USING btree (user_id);
+
+
+--
+-- Name: index_core_access_fields_on_access_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_access_fields_on_access_id ON core_access_fields USING btree (access_id);
+
+
+--
+-- Name: index_core_accesses_on_cluster_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_accesses_on_cluster_id ON core_accesses USING btree (cluster_id);
+
+
+--
+-- Name: index_core_accesses_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_accesses_on_project_id ON core_accesses USING btree (project_id);
+
+
+--
+-- Name: index_core_accesses_on_project_id_and_cluster_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_core_accesses_on_project_id_and_cluster_id ON core_accesses USING btree (project_id, cluster_id);
+
+
+--
+-- Name: index_core_cities_on_country_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_cities_on_country_id ON core_cities USING btree (country_id);
+
+
+--
+-- Name: index_core_cities_on_title_ru; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_cities_on_title_ru ON core_cities USING btree (title_ru);
+
+
+--
+-- Name: index_core_cluster_logs_on_cluster_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_cluster_logs_on_cluster_id ON core_cluster_logs USING btree (cluster_id);
+
+
+--
+-- Name: index_core_cluster_logs_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_cluster_logs_on_project_id ON core_cluster_logs USING btree (project_id);
+
+
+--
+-- Name: index_core_cluster_quotas_on_cluster_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_cluster_quotas_on_cluster_id ON core_cluster_quotas USING btree (cluster_id);
+
+
+--
+-- Name: index_core_clusters_on_private_key; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_core_clusters_on_private_key ON core_clusters USING btree (private_key);
+
+
+--
+-- Name: index_core_clusters_on_public_key; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_core_clusters_on_public_key ON core_clusters USING btree (public_key);
+
+
+--
+-- Name: index_core_credentials_on_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_credentials_on_user_id ON core_credentials USING btree (user_id);
+
+
+--
+-- Name: index_core_employment_positions_on_employment_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_employment_positions_on_employment_id ON core_employment_positions USING btree (employment_id);
+
+
+--
+-- Name: index_core_employments_on_organization_department_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_employments_on_organization_department_id ON core_employments USING btree (organization_department_id);
+
+
+--
+-- Name: index_core_members_on_organization_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_members_on_organization_id ON core_members USING btree (organization_id);
+
+
+--
+-- Name: index_core_members_on_owner_and_user_id_and_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_members_on_owner_and_user_id_and_project_id ON core_members USING btree (owner, user_id, project_id);
+
+
+--
+-- Name: index_core_members_on_project_access_state; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_members_on_project_access_state ON core_members USING btree (project_access_state);
+
+
+--
+-- Name: index_core_members_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_members_on_project_id ON core_members USING btree (project_id);
+
+
+--
+-- Name: index_core_members_on_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_members_on_user_id ON core_members USING btree (user_id);
+
+
+--
+-- Name: index_core_members_on_user_id_and_owner; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_members_on_user_id_and_owner ON core_members USING btree (user_id, owner);
+
+
+--
+-- Name: index_core_members_on_user_id_and_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_core_members_on_user_id_and_project_id ON core_members USING btree (user_id, project_id);
+
+
+--
+-- Name: index_core_organization_departments_on_organization_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_organization_departments_on_organization_id ON core_organization_departments USING btree (organization_id);
+
+
+--
+-- Name: index_core_organizations_on_city_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_organizations_on_city_id ON core_organizations USING btree (city_id);
+
+
+--
+-- Name: index_core_organizations_on_country_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_organizations_on_country_id ON core_organizations USING btree (country_id);
+
+
+--
+-- Name: index_core_organizations_on_kind_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_organizations_on_kind_id ON core_organizations USING btree (kind_id);
+
+
+--
+-- Name: index_core_project_cards_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_project_cards_on_project_id ON core_project_cards USING btree (project_id);
+
+
+--
+-- Name: index_core_project_invitations_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_project_invitations_on_project_id ON core_project_invitations USING btree (project_id);
+
+
+--
+-- Name: index_core_projects_on_kind_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_projects_on_kind_id ON core_projects USING btree (kind_id);
+
+
+--
+-- Name: index_core_projects_on_organization_department_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_projects_on_organization_department_id ON core_projects USING btree (organization_department_id);
+
+
+--
+-- Name: index_core_projects_on_organization_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_projects_on_organization_id ON core_projects USING btree (organization_id);
+
+
+--
+-- Name: index_core_projects_on_state; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_projects_on_state ON core_projects USING btree (state);
+
+
+--
+-- Name: index_core_request_fields_on_request_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_request_fields_on_request_id ON core_request_fields USING btree (request_id);
+
+
+--
+-- Name: index_core_requests_on_cluster_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_requests_on_cluster_id ON core_requests USING btree (cluster_id);
+
+
+--
+-- Name: index_core_requests_on_creator_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_requests_on_creator_id ON core_requests USING btree (creator_id);
+
+
+--
+-- Name: index_core_requests_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_requests_on_project_id ON core_requests USING btree (project_id);
+
+
+--
+-- Name: index_core_sureties_on_author_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_sureties_on_author_id ON core_sureties USING btree (author_id);
+
+
+--
+-- Name: index_core_sureties_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_sureties_on_project_id ON core_sureties USING btree (project_id);
+
+
+--
+-- Name: index_core_surety_members_on_organization_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_surety_members_on_organization_id ON core_surety_members USING btree (organization_id);
+
+
+--
+-- Name: index_core_surety_members_on_surety_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_surety_members_on_surety_id ON core_surety_members USING btree (surety_id);
+
+
+--
+-- Name: index_core_surety_members_on_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_surety_members_on_user_id ON core_surety_members USING btree (user_id);
+
+
+--
+-- Name: index_core_surety_scans_on_surety_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_core_surety_scans_on_surety_id ON core_surety_scans USING btree (surety_id);
+
+
+--
+-- Name: index_sessions_projects_in_sessions_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_projects_in_sessions_on_project_id ON sessions_projects_in_sessions USING btree (project_id);
+
+
+--
+-- Name: index_sessions_projects_in_sessions_on_session_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_projects_in_sessions_on_session_id ON sessions_projects_in_sessions USING btree (session_id);
+
+
+--
+-- Name: index_sessions_report_replies_on_report_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_report_replies_on_report_id ON sessions_report_replies USING btree (report_id);
+
+
+--
+-- Name: index_sessions_reports_on_author_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_reports_on_author_id ON sessions_reports USING btree (author_id);
+
+
+--
+-- Name: index_sessions_reports_on_expert_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_reports_on_expert_id ON sessions_reports USING btree (expert_id);
+
+
+--
+-- Name: index_sessions_reports_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_reports_on_project_id ON sessions_reports USING btree (project_id);
+
+
+--
+-- Name: index_sessions_reports_on_session_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_reports_on_session_id ON sessions_reports USING btree (session_id);
+
+
+--
+-- Name: index_sessions_stats_on_session_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_stats_on_session_id ON sessions_stats USING btree (session_id);
+
+
+--
+-- Name: index_sessions_stats_on_session_id_and_organization_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_stats_on_session_id_and_organization_id ON sessions_stats USING btree (session_id, organization_id);
+
+
+--
+-- Name: index_sessions_stats_on_session_id_and_survey_field_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_stats_on_session_id_and_survey_field_id ON sessions_stats USING btree (session_id, survey_field_id);
+
+
+--
+-- Name: index_sessions_survey_fields_on_survey_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_survey_fields_on_survey_id ON sessions_survey_fields USING btree (survey_id);
+
+
+--
+-- Name: index_sessions_survey_values_on_user_survey_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_survey_values_on_user_survey_id ON sessions_survey_values USING btree (user_survey_id);
+
+
+--
+-- Name: index_sessions_surveys_on_kind_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_surveys_on_kind_id ON sessions_surveys USING btree (kind_id);
+
+
+--
+-- Name: index_sessions_surveys_on_session_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_surveys_on_session_id ON sessions_surveys USING btree (session_id);
+
+
+--
+-- Name: index_sessions_user_surveys_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_user_surveys_on_project_id ON sessions_user_surveys USING btree (project_id);
+
+
+--
+-- Name: index_sessions_user_surveys_on_session_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_user_surveys_on_session_id ON sessions_user_surveys USING btree (session_id);
+
+
+--
+-- Name: index_sessions_user_surveys_on_session_id_and_survey_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_user_surveys_on_session_id_and_survey_id ON sessions_user_surveys USING btree (session_id, survey_id);
+
+
+--
+-- Name: index_sessions_user_surveys_on_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_sessions_user_surveys_on_user_id ON sessions_user_surveys USING btree (user_id);
+
+
+--
+-- Name: index_support_field_values_on_ticket_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_field_values_on_ticket_id ON support_field_values USING btree (ticket_id);
+
+
+--
+-- Name: index_support_replies_on_author_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_replies_on_author_id ON support_replies USING btree (author_id);
+
+
+--
+-- Name: index_support_replies_on_ticket_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_replies_on_ticket_id ON support_replies USING btree (ticket_id);
+
+
+--
+-- Name: index_support_tickets_on_cluster_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_on_cluster_id ON support_tickets USING btree (cluster_id);
+
+
+--
+-- Name: index_support_tickets_on_project_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_on_project_id ON support_tickets USING btree (project_id);
+
+
+--
+-- Name: index_support_tickets_on_reporter_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_on_reporter_id ON support_tickets USING btree (reporter_id);
+
+
+--
+-- Name: index_support_tickets_on_responsible_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_on_responsible_id ON support_tickets USING btree (responsible_id);
+
+
+--
+-- Name: index_support_tickets_on_state; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_on_state ON support_tickets USING btree (state);
+
+
+--
+-- Name: index_support_tickets_on_topic_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_on_topic_id ON support_tickets USING btree (topic_id);
+
+
+--
+-- Name: index_support_tickets_subscribers_on_ticket_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_subscribers_on_ticket_id ON support_tickets_subscribers USING btree (ticket_id);
+
+
+--
+-- Name: index_support_tickets_subscribers_on_ticket_id_and_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_support_tickets_subscribers_on_ticket_id_and_user_id ON support_tickets_subscribers USING btree (ticket_id, user_id);
+
+
+--
+-- Name: index_support_tickets_subscribers_on_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_subscribers_on_user_id ON support_tickets_subscribers USING btree (user_id);
+
+
+--
+-- Name: index_support_tickets_tags_on_tag_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_tags_on_tag_id ON support_tickets_tags USING btree (tag_id);
+
+
+--
+-- Name: index_support_tickets_tags_on_ticket_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_support_tickets_tags_on_ticket_id ON support_tickets_tags USING btree (ticket_id);
+
+
+--
+-- Name: index_user_groups_on_group_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_user_groups_on_group_id ON user_groups USING btree (group_id);
+
+
+--
+-- Name: index_user_groups_on_user_id; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_user_groups_on_user_id ON user_groups USING btree (user_id);
+
+
+--
+-- Name: index_users_on_activation_token; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_users_on_activation_token ON users USING btree (activation_token);
+
+
+--
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
+
+
+--
+-- Name: index_users_on_last_login_at; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_users_on_last_login_at ON users USING btree (last_login_at);
+
+
+--
+-- Name: index_users_on_remember_me_token; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_users_on_remember_me_token ON users USING btree (remember_me_token);
+
+
+--
+-- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
+
+
+--
+-- Name: index_wiki_pages_on_url; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_wiki_pages_on_url ON wiki_pages USING btree (url);
+
+
+--
+-- Name: iproject_on_dos_per_projects; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX iproject_on_dos_per_projects ON core_direction_of_sciences_per_projects USING btree (project_id);
+
+
+--
+-- Name: iproject_on_ira_per_projects; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX iproject_on_ira_per_projects ON core_research_areas_per_projects USING btree (project_id);
+
+
+--
+-- Name: iprojects_on_critical_technologies_per_projects; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX iprojects_on_critical_technologies_per_projects ON core_critical_technologies_per_projects USING btree (project_id);
+
+
+--
+-- Name: ira_on_ira_per_projects; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX ira_on_ira_per_projects ON core_research_areas_per_projects USING btree (research_area_id);
+
+
+--
+-- Name: isurvey_field_and_user; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE INDEX isurvey_field_and_user ON sessions_survey_values USING btree (survey_field_id, user_survey_id);
+
+
+--
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: octo; Tablespace: 
+--
+
+CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

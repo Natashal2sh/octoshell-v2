@@ -1,0 +1,335 @@
+  <%= stylesheet_link_tag    "mystatistics/application", media: "all" %>
+  <%= javascript_include_tag "mystatistics/application" %>
+  <%= csrf_meta_tags %>
+
+<% cur_user = [current_user] %>
+<% logins = [] %>
+
+<% @members.where(:user_id => current_user.id).find_each do |member| %>
+  <% logins = logins + [member.login] %>
+<% end %>
+
+<%= form_tag(controller: 'tasks', action: 'get_login', method: 'post') do %>
+  <%= select_tag 'sell_type', options_for_select(logins, :selected => @login), id:'select_login'%>
+  <%= submit_tag "Подтвердить"%>
+<% end %>
+
+<br>
+<%= "Введите даты для построения статистики в формате гггг.мм.дд" %>
+<br>
+<%= "По умолчанию при некорректном вводе строится статистика за последние 28 дней" %>
+<br>
+<br>
+<div style="float:left" class="inline-div">
+  <%= text_field_tag('txt', value = '', id: 'start_date')  %>  
+</div>
+</t>
+<div style="float:left" tabindex="1"=>
+&nbsp;
+&nbsp;
+<%= " - " %> 
+&nbsp;
+&nbsp;
+</div>
+<div class="inline-div">
+  <%= text_field_tag('txt', value = '', id: 'end_date')  %>  
+</div>
+<br>
+<%= button_tag 'Отобразить статистику', type: 'button', onclick: "stats();",  class: 'btn btn-default'%>
+<div style="width: 420px; height: 100%;">
+<canvas id="Chart_corehours"></canvas>
+<canvas id="Chart_tasknum"></canvas>
+<canvas id="Chart_corehours_weeks"></canvas>
+<canvas id="Chart_tasknum_weeks"></canvas>
+</div>
+
+<script>
+  function date_to_format (date)
+  {
+    format = date.getFullYear() + '.';
+    if (date.getMonth() + 1 < 10) format += '0';
+    format += (date.getMonth()+1) + '.';
+    if (date.getDate() < 10) format += '0';
+    format += date.getDate();
+    return format;
+  }
+
+  function to_dots_separated_date(date)
+  {
+    var new_date = date.replace(/-/g, ".");
+    return new_date;
+  }
+
+  function my_sort (days, corehours)
+  {
+    var i, j;
+    for (i = 0; i < days.length; i++)
+    {
+      for (j = i + 1; j < days.length; j++)
+      {
+        if (days[i] > days[j])
+        {
+          var tmp1 = days[i];
+          var tmp2 = corehours[i];
+          days[i] = days[j];
+          corehours[i] = corehours[j];
+          days[j] = tmp1;
+          corehours[j] = tmp2;
+        }
+      }
+    }
+  }
+
+  function daystats (NUM, corehours, days, end_date)
+  {
+    //var date = new Date();
+    var i = 1;
+    var j = 0;
+    var dates = [];
+    var actual_corehrs = [];
+    var tasks_num = [];
+    //document.getElementById('start_date').value = session[:soul_id];
+    var curdate = end_date;
+    dates.push(date_to_format(curdate));
+    while (i < NUM)
+    {
+      curdate.setDate(end_date.getDate()-1);
+      dates.push(date_to_format(curdate));
+      i++;
+    }
+
+    dates = dates.reverse();
+
+    for (i = 0; i < dates.length; i++)
+    {
+      actual_corehrs.push(0);
+      tasks_num.push(0);
+    }
+
+    for (i = dates.length - 1; i >= 0; i--)
+    {
+      for (j = days.length - 1; j >= 0; j--)
+      {
+        if(dates[i] == days[j])
+        {
+          actual_corehrs[i] += corehours[j];
+          tasks_num[i] += 1;
+        }
+      }
+    }
+
+    return [dates, actual_corehrs, tasks_num];
+  }
+
+  function userDate1 (begin_date_str)
+  {
+    var data = begin_date_str.split(".");
+    if (data.length != 3)
+    {
+      document.getElementById('start_date').value = "Incorrect date"; 
+      return 0;
+    }
+
+    var user_date = new Date (parseInt(data[0]), parseInt(data[1] - 1), parseInt(data[2]));  
+    return user_date;
+  }
+
+  function userDate2 (end_date_str)
+  {
+    var data = end_date_str.split(".");
+    if (data.length != 3)
+    {
+      document.getElementById('end_date').value = "Incorrect date"; 
+      return 0;
+    }
+
+    var user_date = new Date (parseInt(data[0]), parseInt(data[1] - 1), parseInt(data[2]));  
+    return user_date;
+  }
+
+  function weekstats(NUM, dates, actual_corehrs, tasks_num)
+  {
+    var weeks = [];
+    var hoursbyweek = [];
+    var week_tasks_num = [];
+    var flag = 1;
+    var weeknum = -1;
+    for (var i = NUM - 1; i >= 0; i--)
+    {
+      if ((NUM - 1 - i) % 7 == 0)
+      {
+        flag = 1;
+      }
+
+      if (flag == 1)
+      {
+        //weeks.push(dates[i - 6 >= 0 ? i - 6:0] + '-' + dates[i]);
+        weeks.push(dates[i - 6 >= 0 ? i - 6:0]);
+        hoursbyweek.push(0);
+        week_tasks_num.push(0);
+        weeknum+=1;
+        flag = 0;
+      }
+
+      hoursbyweek[weeknum] += actual_corehrs[i];
+      week_tasks_num[weeknum] += tasks_num[i];
+    }
+
+    weeks = weeks.reverse();
+    hoursbyweek = hoursbyweek.reverse();
+    week_tasks_num = week_tasks_num.reverse();
+
+    return [weeks, hoursbyweek, week_tasks_num];
+  }
+
+  function get_login ()
+  {
+    return document.getElementById('select_login').value;
+  }
+
+  function stats ()
+  {
+    <% user_cores = Array.new(0) %>
+    <% user_td = Array.new(0) %>
+    <% user_days = Array.new(0) %>
+    <% user_corehours = Array.new(0) %>
+    <% @tasks.where(:login => @login).find_each do |task| %>
+      <% user_cores = user_cores + [task.cores] %>
+      <% user_td = user_td + [TimeDifference.between(task.tend, task.tbegin).in_seconds] %>
+      <% user_days = user_days + [task.tbegin.to_date.strftime("%Y-%m-%d")] %>
+      <% user_corehours = user_corehours + [(TimeDifference.between(task.tend, task.tbegin).in_seconds * task.cores/3600).round(2)] %>
+    <% end %>
+
+    var cores = <%= raw user_cores %>
+    var td = <%= raw user_td %>
+    var days = <%= raw user_days %>
+    var corehours = <%= raw user_corehours %>
+    //var current_user = <%= raw cur_user%>
+    const defnum = 28;
+    var chartlabel1, chartlabel2;
+    my_sort(days, corehours);
+
+    for (var i = 0; i < days.length; i++)
+    {
+      days[i] = to_dots_separated_date(days[i]);
+    }
+
+    var NUM = defnum;
+    chartlabel1 = 'ядрочасы';
+    chartlabel2 = 'количество задач';
+
+    var begin_date_str = document.getElementById('start_date').value;
+    var end_date_str = document.getElementById('end_date').value;
+    var begin_date = userDate1(begin_date_str);
+    var end_date = userDate2(end_date_str);
+
+    if (begin_date != 0 && end_date != 0) 
+    {
+      NUM = Math.round((end_date - begin_date)/1000/3600/24) + 1;
+      if (NUM <= 0) 
+      {
+        end_date = new Date();
+        NUM = defnum;
+      }
+    }
+    else 
+    {
+      end_date = new Date();
+    }
+
+    var result = daystats(NUM, corehours, days, end_date);
+    var dates = result[0];
+    var actual_corehrs = result[1];
+    var tasks_num = result[2];
+
+    
+    //document.getElementById("begin_date_str").value = cur_user;
+
+    var ctx = document.getElementById("Chart_corehours").getContext("2d");
+    var Chart_corehours = new Chart(ctx, {
+      type: 'bar',
+      data: {
+               labels: dates,
+               datasets: [{
+                             label: chartlabel1,
+                             data: actual_corehrs,
+                             backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                             borderColor: 'rgba(255, 0, 0, 0.2)',
+                             borderWidth: 1
+                          }]
+             },
+      options: {
+               scales: { yAxes: [{ticks: { beginAtZero:true }}],
+                         xAxes: [{ barPercentage: 1.0 }]
+                       }
+              }
+    });
+
+    var ctx = document.getElementById("Chart_tasknum").getContext("2d");
+    var Chart_tasknum = new Chart(ctx, {
+      type: 'bar',
+      data: {
+               labels: dates,
+               datasets: [{
+                            label: chartlabel2,
+                            data: tasks_num,
+                            backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                            borderColor: 'rgba(255, 0, 0, 0.2)',
+                            borderWidth: 1            
+                          }]
+             },
+      options: {
+               scales: { yAxes: [{ticks: { beginAtZero:true }}],
+                         xAxes: [{ barPercentage: 1.0 }]
+                       }
+              }
+    });
+
+    result = weekstats(NUM, dates, actual_corehrs, tasks_num);
+    dates = result[0];
+    actual_corehrs = result[1];
+    tasks_num = result[2];      
+     
+    var ctx = document.getElementById("Chart_corehours_weeks").getContext("2d");
+    var Chart_corehours_weeks = new Chart(ctx, {
+      type: 'bar',
+      data: {
+               labels: dates,
+               datasets: [{
+                             label: chartlabel1,
+                             data: actual_corehrs,
+                             backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                             borderColor: 'rgba(255, 0, 0, 0.2)',
+                             borderWidth: 1
+                          }]
+             },
+      options: {
+               scales: { yAxes: [{ticks: { beginAtZero:true }}],
+                         xAxes: [{ barPercentage: 1.0 }]
+                       }
+              }
+    });
+
+    var ctx = document.getElementById("Chart_tasknum_weeks").getContext("2d");
+    var Chart_tasknum_weeks = new Chart(ctx, {
+      type: 'bar',
+      data: {
+               labels: dates,
+               datasets: [{
+                            label: chartlabel2,
+                            data: tasks_num,
+                            backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                            borderColor: 'rgba(255, 0, 0, 0.2)',
+                            borderWidth: 1            
+                          }]
+             },
+      options: {
+               scales: { yAxes: [{ticks: { beginAtZero:true }}],
+                         xAxes: [{ barPercentage: 1.0 }]
+                       }
+              }
+    });
+
+    //document.getElementById('start_date').value = @login;
+  }
+</script>

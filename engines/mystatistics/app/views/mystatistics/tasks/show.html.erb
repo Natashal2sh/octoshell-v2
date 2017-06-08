@@ -1,0 +1,44 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Claster:</strong>
+  <%= @task.claster %>
+</p>
+
+<p>
+  <strong>Ntask:</strong>
+  <%= @task.ntask %>
+</p>
+
+<p>
+  <strong>Login:</strong>
+  <%= @task.login %>
+</p>
+
+<p>
+  <strong>Tbegin:</strong>
+  <%= @task.tbegin %>
+</p>
+
+<p>
+  <strong>Tend:</strong>
+  <%= @task.tend %>
+</p>
+
+<p>
+  <strong>Nodes:</strong>
+  <%= @task.nodes %>
+</p>
+
+<p>
+  <strong>Cores:</strong>
+  <%= @task.cores %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @task.status %>
+</p>
+
+<%= link_to 'Edit', edit_task_path(@task) %> |
+<%= link_to 'Back', tasks_path %>

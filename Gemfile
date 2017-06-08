@@ -31,7 +31,8 @@ gem "sessions",       path: "engines/sessions"
 gem "statistics",     path: "engines/statistics"
 gem "wiki",           path: "engines/wiki"
 gem "announcements",  path: "engines/announcements"
-
+gem "mystatistics",   path: "engines/mystatistics"
+ 
 gem "config", github: 'railsconfig/config'
 gem "decorators", "~> 1.0.0"
 

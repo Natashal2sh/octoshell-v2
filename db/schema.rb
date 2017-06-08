@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150617111011) do
+ActiveRecord::Schema.define(version: 20170413063225) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "abilities", force: :cascade do |t|
     t.string   "action",     limit: 255
@@ -382,6 +385,19 @@ ActiveRecord::Schema.define(version: 20150617111011) do
     t.boolean  "system"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "mystatistics_tasks", force: :cascade do |t|
+    t.integer  "claster"
+    t.integer  "ntask"
+    t.string   "login"
+    t.datetime "tbegin"
+    t.datetime "tend"
+    t.integer  "nodes"
+    t.integer  "cores"
+    t.string   "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "profiles", force: :cascade do |t|

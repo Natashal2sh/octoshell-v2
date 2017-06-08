@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  claster: 1
+  ntask: 1
+  login: MyString
+  tbegin: 2017-04-13 09:32:26
+  tend: 2017-04-13 09:32:26
+  nodes: 1
+  cores: 1
+  status: MyString
+
+two:
+  claster: 1
+  ntask: 1
+  login: MyString
+  tbegin: 2017-04-13 09:32:26
+  tend: 2017-04-13 09:32:26
+  nodes: 1
+  cores: 1
+  status: MyString

@@ -57,6 +57,8 @@ ActionController::Base.class_eval do
     menu.add_item(Face::MenuItem.new({name: t("user_submenu.projects"),
                                       url: core.projects_path,
                                       regexp: /core\/(?:projects|)(?!employments|organizations)/}))
+    menu.add_item(Face::MenuItem.new({name: t("user_submenu.statistics"),
+                                      url: mystatistics.tasks_path, regexp: /statistics/}))
     current_session = Sessions::Session.current || Sessions::Session.last
     sessions_warning = current_user.reports.where(session: current_session, state: [:pending, :accepted, :exceeded]).any? ||
                        current_user.surveys.where(session: current_session, state: [:pending, :filling, :exceeded]).any?
@@ -166,6 +168,9 @@ ActionController::Base.class_eval do
     menu.add_item(Face::MenuItem.new({name: t("admin_submenu.statistics"),
                                       url: statistics.projects_path,
                                       regexp: /admin\/statistics/})) if User.superadmins.include? current_user
+    menu.add_item(Face::MenuItem.new({name: t("admin_submenu.mystatistics"),
+                                      url: mystatistics.tasks_path,
+                                      regexp: /statistics/})) if User.superadmins.include? current_user
     menu.add_item(Face::MenuItem.new({name: t("admin_submenu.announcements"),
                                       url: announcements.admin_announcements_path,
                                       regexp: /admin\/announcements/})) if User.superadmins.include?(current_user)|| current_user.mailsender?

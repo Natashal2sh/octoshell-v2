@@ -87,4 +87,6 @@ Octoshell::Application.configure do
     :address => "smtp.parallel.ru",
     :port => 25
   }
+
+  config.token = "1029384asdfgh"
 end
